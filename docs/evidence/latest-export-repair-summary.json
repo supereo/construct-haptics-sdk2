@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "scope": "Static inspection and supported native bridge installation into a separate copy of the actual supplied standalone iOS Xcode export. No Xcode compilation, physical device execution, native analytics initialization or dashboard delivery.",
+  "scope": "Static inspection and supported native bridge installation into a separate copy of the actual supplied standalone iOS Xcode export, followed by static libc++ link-dependency correction. A previous user Xcode link failed. No corrected Xcode compilation/link, physical device execution, native analytics initialization or dashboard delivery.",
   "addonRelease": "1.0.2",
   "sourceProjectStatus": "User reports bundled Haptics 1.0.1 and editor Haptics 1.0.2; original source project not inspected here.",
   "originalExport": {
@@ -68,5 +68,20 @@
     "sourceProjectBundledAddonUpdateAndReexport": "Original Construct source/editor unavailable.",
     "futureBuildServiceNativeInclusion": "No custom package approval or corrected future service export verified."
   },
-  "privacy": "Sanitized metadata only. No private game files, file inventories, configuration values, analytics keys, source scripts or player data copied into this evidence."
+  "privacy": "Sanitized metadata only. No private game files, file inventories, configuration values, analytics keys, source scripts or player data copied into this evidence.",
+  "nativeLinkFollowup": {
+    "userReportedPreviousXcodeLink": "FAIL: undefined C++ runtime and exception symbols.",
+    "officialSDKReportedCxxSymbolsConfirmed": true,
+    "correctedSystemLinkRegistration": "PASS \u2014 static only",
+    "framework": "libc++.tbd",
+    "sdkPath": "usr/lib/libc++.tbd",
+    "sourceTree": "SDKROOT",
+    "strongFrameworksPhaseLink": true,
+    "resourceOrEmbedPhaseMembership": false,
+    "frameworkMetadataReferenceCount": 1,
+    "frameworkOnlySupportDeclaration": "supereo-ios-static-link-requirements 1.0.1",
+    "addonAndNativeBridgePackageBytesUnchanged": true,
+    "correctedXcodeCompilationAndLink": "NOT RUN: Linux environment has no Xcode/Apple SDK.",
+    "selectedStaticEvidence": "libcxx-link-summary.json"
+  }
 }

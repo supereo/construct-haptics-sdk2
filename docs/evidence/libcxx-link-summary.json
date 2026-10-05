@@ -1,0 +1,42 @@
+{
+  "status": "PASS \u2014 static dependency diagnosis and corrected link registration only",
+  "scope": "No corrected Xcode compilation/link, physical haptics, native analytics initialization or dashboard delivery.",
+  "addonVersion": "1.0.2",
+  "nativeHapticsVersion": "1.0.0",
+  "nativeGameAnalyticsBridgeVersion": "1.0.0-rc.1",
+  "userReportedPreviousXcodeLink": "FAIL: undefined C++ runtime and exception symbols.",
+  "officialGameAnalyticsSDK": {
+    "version": "5.1.0",
+    "deviceArm64ArchiveSha256": "52633b2e63b68d1db09e0def4a2e6d8c1c7ba06013966a36a0d521c52face115",
+    "reportedUndefinedCxxSymbolsConfirmed": [
+      "std::__1::chrono::steady_clock::now()",
+      "std::terminate()",
+      "__cxa_begin_catch",
+      "__gxx_personality_v0"
+    ],
+    "priorLibcxxLinkDeclarationMissing": true
+  },
+  "correctedProject": {
+    "frameworkDeclaration": {
+      "pluginId": "supereo-ios-static-link-requirements",
+      "version": "1.0.1",
+      "framework": "libc++.tbd",
+      "nativeBridgePackageBytesChanged": false
+    },
+    "sdkPath": "usr/lib/libc++.tbd",
+    "sourceTree": "SDKROOT",
+    "fileType": "sourcecode.text-based-dylib-definition",
+    "linkPhase": "PBXFrameworksBuildPhase",
+    "weak": false,
+    "resourcesPhase": false,
+    "embedded": false,
+    "frameworkMetadataReferenceCount": 1,
+    "protectedGameplayAssetCount": 112,
+    "gameplaySettingsAndEventSheetsUnmodified": true,
+    "existingNativeSourcesPrivacyResourcesAndSDKBytesUnmodified": true,
+    "originalExportUnmodified": true
+  },
+  "correctedXcodeCompilationAndLink": "NOT RUN: Linux environment has no Xcode/Apple SDK.",
+  "deviceHapticsAndGameAnalyticsDelivery": "NOT RUN: no Xcode/iPhone execution available; no native SDK initialization or analytics transmission performed.",
+  "privacy": "Public dependency metadata and selected validation outcomes only; no private game assets, configuration values, keys, file inventories or scripts."
+}

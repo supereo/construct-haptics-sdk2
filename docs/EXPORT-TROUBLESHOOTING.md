@@ -30,6 +30,16 @@ The latest supplied Build Service export had valid Simple-minified main-thread J
 
 Addon 1.0.2 declares the Haptics dependency automatically for external Cordova restoration. Build Service still requires approval of custom native packages. If a game also uses SupereoGameAnalytics, its matching native package must be included independently. Use an external Cordova build with both dependencies, or supported postprocessing of a copied Xcode export. Do not promise that another Build Service export will include them without approval and file-level verification.
 
+## Native link dependencies
+
+The user's first repaired-project build reached Xcode's native linker and failed with undefined `std::__1::chrono::steady_clock::now()`, `std::terminate()`, `__cxa_begin_catch` and `__gxx_personality_v0` symbols. These C++ runtime references from the GameAnalytics SDK require **`libc++.tbd`**. Its matching bridge package 1.0.0-rc.1 did not declare that system link dependency. The earlier source/framework-registration checks were static checks and did not establish a successful native link.
+
+In the **App target**, open **Build Phases → Link Binary With Libraries → +**, search for `libc++.tbd`, select it and click **Add**. Clean the build folder and build again. `libc++.tbd` is an SDK link stub; iOS provides the runtime library. The addon and native bridge versions need no change for this project-level correction.
+
+The user-reported native link is **FAIL**. Agent-side Xcode compilation remains **NOT RUN** because this host has no Xcode/Apple SDK. A correct project-file link reference, a successful Xcode link, haptic output and analytics dashboard delivery are separate results.
+
+The revised prepared project and repair kit **1.0.1** include the dependency automatically. The SDKROOT `usr/lib/libc++.tbd` file reference and strong frameworks-phase link were verified statically; there is no resource or embed-phase membership. Gameplay assets and existing bridge/SDK bytes are unchanged. See the [sanitized link summary](evidence/libcxx-link-summary.json). The corrected Xcode build/link remains **NOT RUN** until rebuilt on macOS.
+
 ## Prepared repair and remaining checks
 
 For the matching prepared repaired Xcode ZIP, extract it into a fresh folder, open `App.xcworkspace`, set signing, choose the device, clean the build folder and run. The native installation has already been performed in that artifact; routine Cordova installation/preparation commands are unnecessary and may regenerate its platform files.

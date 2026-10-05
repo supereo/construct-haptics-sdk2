@@ -43,7 +43,21 @@ The prepared repaired Xcode ZIP supplied with this task is a complete project co
 3. Select the app target and your signing team/profile, choose the connected iPhone, use **Product → Clean Build Folder**, then build and run the app.
 4. Check native Haptics capability/dispatch results and the game's GameAnalytics startup/error output. Check actual haptic behavior and analytics delivery separately; static inclusion does not prove either one works on the device or reaches a dashboard.
 
-No Cordova install, prepare or platform-add command is required to use that matching prepared artifact. Regenerating it with a different platform or package configuration could discard the prepared registrations. The bridge installation and project-file checks are recorded in [TEST-REPORT.md](TEST-REPORT.md); Xcode compilation, iPhone output and GameAnalytics dashboard delivery remain **NOT RUN** here.
+No Cordova install, prepare or platform-add command is required to use that matching prepared artifact. Regenerating it with a different platform or package configuration could discard the prepared registrations. The bridge installation and project-file checks are recorded in [TEST-REPORT.md](TEST-REPORT.md); agent-side Xcode compilation, iPhone output and GameAnalytics dashboard delivery remain **NOT RUN** here.
+
+### Reported GameAnalytics C++ linker failure
+
+The user's Xcode build of the first prepared copy failed at native linking with undefined C++ symbols, including `std::__1::chrono::steady_clock::now()`, `std::terminate()`, `__cxa_begin_catch` and `__gxx_personality_v0`. The GameAnalytics native SDK requires Apple's C++ runtime, **`libc++.tbd`**. The matching GameAnalytics bridge package 1.0.0-rc.1 omitted that link declaration; correct native service registration alone did not cover this dependency.
+
+To correct an already extracted copy in Xcode:
+
+1. Open `App.xcworkspace` and select the **App target**.
+2. Open **Build Phases → Link Binary With Libraries**, click **+**, search for **`libc++.tbd`**, select it and click **Add**.
+3. Use **Product → Clean Build Folder**, then build again with your existing signing configuration.
+
+This links the system C++ runtime; it does not require replacing either native bridge package or the Construct addon. A corrected project-file reference still needs an actual Xcode link and device test. The user's failed link is recorded as **FAIL**; agent-side Xcode compilation, physical haptics and analytics delivery remain **NOT RUN**.
+
+The revised prepared Xcode project and repair kit **1.0.1** now include this dependency automatically. Static verification found the SDKROOT `usr/lib/libc++.tbd` reference linked once in the app's frameworks phase, without embedding or resource copying. All protected gameplay assets and existing native bridge/SDK bytes remain unchanged. The [sanitized link-dependency evidence](evidence/libcxx-link-summary.json) records the correction; a successful Xcode rebuild has not yet been established.
 
 The prepared repair does not update the original Construct source project's bundled addon or make future Build Service exports include the custom bridges. For future builds, use the source update and export process below. See [EXPORT-TROUBLESHOOTING.md](EXPORT-TROUBLESHOOTING.md) for the distinction between a missing runtime file, missing native package and device/backend verification.
 

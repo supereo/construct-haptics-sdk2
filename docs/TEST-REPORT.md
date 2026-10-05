@@ -5,9 +5,12 @@ and syntax checks: 5 October 2026. Source addon ID: `Supereo_Haptics`, Construct
 version `1.0.2.0`, unchanged native bridge version `1.0.0`. Requested editor: Construct 3
 **r495.2 stable**, Worker Auto and Off, export minification Simple.
 
-The release is packaged and schema-checked. JavaScript and available native
-build checks passed. A later supplied Build Service iOS export was inspected
-statically and a separate project copy received supported native installation.
+The release is packaged and schema-checked. JavaScript and available agent-side
+native build checks passed. A later supplied Build Service iOS export was
+inspected statically and a separate project copy received native installation.
+The user's first Xcode link of that copy failed because its GameAnalytics SDK
+linkage omitted `libc++.tbd`. The corrected dependency is statically verified;
+the revised Xcode build/link has not run here.
 **It is not device-validated. Agent-side editor installation/export execution,
 Apple compilation and correct future Build Service native inclusion remain
 unverified.**
@@ -85,6 +88,32 @@ Xcode compilation, device startup/output and analytics dashboard delivery. Only
 sanitized observations belong in this public SDK report; private game files,
 configuration values and analytics keys are not included.
 
+### User-reported Xcode native link failure
+
+The user's actual Xcode build of the first prepared project failed at linking.
+Reported undefined symbols include `std::__1::chrono::steady_clock::now()`,
+`std::terminate()`, `__cxa_begin_catch` and `__gxx_personality_v0`. The
+GameAnalytics SDK requires Apple's C++ runtime, `libc++.tbd`, which the matching
+bridge package 1.0.0-rc.1 did not declare. The original static integration checks
+therefore did not cover every required native link dependency.
+
+The user-reported link result is **FAIL**, distinct from the passing file and
+registration checks. [INSTALLATION.md](INSTALLATION.md) gives the manual App
+target → Build Phases → Link Binary With Libraries → `libc++.tbd` correction.
+The addon remains 1.0.2 and both bridge versions are unchanged. Agent-side Xcode
+compilation remains **NOT RUN** on this Linux host; a project-file correction
+does not establish a successful native link or device/backend output.
+
+The official GameAnalytics 5.1.0 device arm64 archive's symbol table confirms
+all four reported unresolved C++ symbols. The revised project and separate
+repair kit 1.0.1 add `libc++.tbd` through a framework-only Cordova declaration.
+Static checks confirm exactly one SDKROOT `usr/lib/libc++.tbd` reference and
+one strong frameworks-phase link, without resource or embed membership.
+The original export, 112 protected gameplay assets/settings, native bridges,
+privacy resources and SDK bytes are unchanged. This is a **PASS for static
+dependency registration**, with the corrected Xcode build/link still **NOT RUN**.
+See the [sanitized link-dependency summary](evidence/libcxx-link-summary.json).
+
 ## Executed checks
 
 | Check | Actual outcome | Scope / evidence |
@@ -101,7 +130,9 @@ configuration values and analytics keys are not included.
 | Actual supplied latest export: native bridge diagnosis | Confirmed missing | Original output lacks both Supereo Haptics and SupereoGameAnalytics registrations; Taptic Engine 2.2.0 remains present and provides a different interface. This is actual export inspection, not a simulated fixture. |
 | Actual supplied-export copy: matching native bridges installed | PASS | Supported Cordova iOS 8.1.1 platform API installed Haptics **1.0.0** and matching SupereoGameAnalytics **1.0.0-rc.1**. Native/JS services, exact source/resources, compile/resource/framework phase membership and registration inspected. **No Xcode compile or device execution.** [Sanitized summary](evidence/latest-export-repair-summary.json). |
 | Actual repaired-copy static imports and game-file preservation | PASS | **18 actual JavaScript files**, zero local import references, registrations present; original export unmodified; **112 protected web assets/settings unchanged byte for byte**, six integration metadata files changed and zero removals. |
-| Matching GameAnalytics native SDK artifact inclusion | PASS | Official SDK **5.1.0** archive checksum matched official `Package.swift`; 32 vendored files and 31 installed framework files checked against the archive. Linking/configuration inspection only; no native initialization, live events or dashboard result. |
+| Matching GameAnalytics native SDK artifact inclusion | PASS | Official SDK **5.1.0** archive checksum matched official `Package.swift`; 32 vendored files and 31 installed framework files checked against the archive. Artifact/source inclusion checks only; no native initialization, live events or dashboard result. |
+| User's first prepared-project Xcode native link | **FAIL — user reported** | Undefined C++ runtime symbols from the GameAnalytics SDK; required `libc++.tbd` was missing from the app's link declarations. Earlier static inclusion checks did not establish complete link dependencies. Agent-side Xcode compilation remains unavailable. |
+| GameAnalytics C++ dependency diagnosis and revised project registration | **PASS — static only** | Official device arm64 archive contains all four reported undefined C++ symbols. Revised project has exactly one SDKROOT `usr/lib/libc++.tbd` reference and strong frameworks-phase link, without resource/embed membership; gameplay and existing bridge/SDK bytes unchanged. **Corrected Xcode link NOT RUN.** [Sanitized evidence](evidence/libcxx-link-summary.json). |
 | Follow-up packaged-addon/export-auditor regression subset | PASS, **18 tests** | Re-ran `tests/compiled-addon.cjs` and `tests/export-audit.test.cjs` during the supplied-export repair. Minified Worker/main-thread fixtures, graceful missing-bridge behavior and removed-helper detection passed. A repeat of a subset, not 18 additional unique tests or an editor/device test. |
 | Repaired-export Cordova JavaScript loader/runtime host fixtures | PASS, **8 cases** | Loader/module registration and Worker/main-thread contract fixtures passed with mocked native calls. **No native haptic or analytics SDK initialization, device execution or live delivery.** |
 | **Source suite total** | **153 passed; 0 failed/skipped** | [Captured output](evidence/javascript-tests.log). Fixtures do not run the Construct editor or physical hardware. |
@@ -133,11 +164,12 @@ checked separately for this release; Xcode compilation was not available.
 | --- | --- | --- |
 | Install/open corrected addon 1.0.2 in Construct r495.2 | **NOT RUN** | Actual Chromium navigation failed before the editor loaded: proxy CONNECT 403 / `ERR_TUNNEL_CONNECTION_FAILED`. [Probe](evidence/editor-access-result.json). Install 1.0.2, update the project-bundled copy, save/reload and follow demo/ASSEMBLY.md. |
 | Real Worker Auto and Worker Off preview/export execution | **NOT RUN** | The supplied export has main-thread `useWorker: false` configuration; host fixtures exercise both messaging modes. Actual editor/runtime execution in both settings remains untested. |
-| Agent-side Construct Simple export minifier execution | **NOT RUN** | The supplied actual export is Simple-minified and parses. Packaged scripts are also minified/tested with Terser without property mangling; no agent-side Construct exporter execution occurred. |
+| Fresh agent-generated Construct Simple export/minification | **NOT RUN** | The supplied Simple-minified app was inspected statically and parses. Packaged scripts are also minified/tested with Terser without property mangling; a fresh addon 1.0.2 export from the actual Construct editor remains unavailable. |
 | Construct-generated Android AAB / iOS app end to end | **NOT RUN** | A supplied Build Service iOS project was inspected and a separate copy repaired. No agent-side Construct export, Xcode compilation, signed app or physical-device execution occurred. |
 | Actual QuickChess source bundled-addon update and re-export | **NOT RUN** | The original Construct source/editor remains unavailable. The user reports bundled Haptics 1.0.1 versus editor 1.0.2; use Tools → View used addons → Update to editor version, save/reload and export again. |
 | Construct export of the pinned HTTPS Cordova version spec | **NOT RUN** | Documented `AddCordovaPluginReference` declares a version spec and config.xml inclusion; URL restoration passed in Cordova. Actual Construct URL-spec pass-through still needs an exported config.xml. |
-| Xcode/Apple SDK Swift typechecking and compilation | **NOT RUN** | Linux host lacks macOS, Xcode, Apple SDK and `xcodebuild`. Project-file and syntax checks do not replace compilation. |
+| Agent-side Xcode/Apple SDK Swift typechecking and compilation | **NOT RUN** | Linux host lacks macOS, Xcode, Apple SDK and `xcodebuild`. Project-file and syntax checks do not replace compilation. |
+| Revised supplied-project Xcode rebuild/link after libc++ correction | **NOT RUN** | User's preceding link failed; the missing SDK link declaration is now statically verified. This host cannot run Xcode, so corrected native link success remains unestablished. |
 | Supplied/repaired game: native GameAnalytics startup and dashboard delivery | **NOT RUN** | Missing registration was diagnosed and native integration can be inspected statically; no iPhone execution, live analytics delivery or dashboard validation occurred. |
 | Supported physical iPhone / UIKit/Core Haptics | **NOT RUN** | No iPhone attached. Simulator output would not establish haptic behavior either. |
 | Advanced physical Android device | **NOT RUN** | No physical device/emulator attached. Verify primitives, amplitude and API 36 envelope hardware queries on appropriate devices. |
