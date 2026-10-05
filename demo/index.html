@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Supereo Haptics · Feedback studio</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="../lib/core.js"></script><script defer src="patterns.js"></script><script defer src="demo.js"></script>
+</head>
+<body>
+  <main>
+    <header><a class="brand" href="#"><span class="mark">s<span>•</span></span> supereo<span class="brand-detail"> / HAPTICS</span></a><span class="version">SDK v2 · 1.0.0</span></header>
+    <section class="intro"><div class="eyebrow">SMALL DETAILS. BETTER GAMES.</div><h1>Make every move<br><span>feel considered.</span></h1><p>A tiny tick. A confident impact. A little moment of celebration.<br>Explore the language of mobile feedback.</p></section>
+    <div class="status-strip"><span class="status-dot"></span><strong id="backend">Preview simulation</strong><span id="backend-note">Visual feedback only. Your device's haptics are not being tested.</span></div>
+    <div class="workspace">
+      <section class="card presets"><div class="section-title"><div><span class="eyebrow">01 / EVERYDAY FEEDBACK</span><h2>Find the right feeling</h2></div><span class="pill">9 presets</span></div><div id="presets" class="preset-grid"></div><p class="small">Native exports request the platform's own feedback when available.<br>Sensations, strength and timing vary between devices.</p></section>
+      <section class="card control"><span class="eyebrow">PLAYER PREFERENCES</span><h2>Less can be more.</h2><label class="toggle-row" for="enabled">Haptics enabled<input type="checkbox" id="enabled" checked></label><div class="range-heading"><label for="strength">Overall strength</label><output id="strength-value">100%</output></div><input id="strength" type="range" min="0" max="1" step="0.05" value="1"><div class="range-labels"><span>Silent</span><span>Normal</span></div><label class="select-label" for="overlap">When feedback is already playing</label><select id="overlap"><option value="replace">Replace the current pattern</option><option value="ignore">Ignore the new request</option></select><button id="stop" class="stop">■ &nbsp; Stop current pattern</button><p class="small">A timeline is an estimate of scheduled work, never proof that a motor moved.</p></section>
+      <section class="card timeline-card"><div class="section-title"><div><span class="eyebrow">02 / PATTERN EXPLORER</span><h2>A rhythm you can see</h2></div><span id="duration" class="pill">Ready</span></div><div class="pattern-buttons" id="patterns"></div><div class="timeline-wrap"><canvas id="timeline" aria-label="Visual timing and intensity of the selected feedback" role="img"></canvas><span class="axis-label">INTENSITY</span><div class="time-labels"><span>0 ms</span><span id="timeline-end">700 ms</span></div></div><div class="now-playing"><span class="pulse-dot" id="pulse-dot"></span><span id="now-playing">Choose feedback to preview its timeline.</span><span class="illustrative">ILLUSTRATIVE PREVIEW</span></div><details><summary>Advanced · edit a version 1 pattern</summary><label class="sr-only" for="json">Pattern JSON</label><textarea id="json" spellcheck="false"></textarea><button class="primary" id="play-json">Validate &amp; play custom pattern</button><p class="small">Times in milliseconds. Intensities from 0 to 1. At most 64 events and 10 seconds. Sharpness is supported differently on each platform.</p></details></section>
+      <section class="card capabilities"><span class="eyebrow">03 / KNOW YOUR DEVICE</span><h2>Honest capabilities.</h2><div id="capabilities"></div><div class="dispatch-result"><span class="eyebrow">LAST DISPATCH</span><pre id="result">No requests yet.</pre></div><p class="small">Simulation does not exercise UIKit, Core Haptics, Android vibration APIs, or native hardware.</p></section>
+    </div>
+    <footer><span>Supereo Haptics · Independent of any game or backend.</span><a href="../docs/INSTALLATION.md">Installation &amp; exports ↗</a></footer>
+  </main>
+</body>
+</html>

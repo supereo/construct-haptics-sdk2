@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "timeMs": 0,
+      "type": "transient",
+      "intensity": 0.2,
+      "sharpness": 0.4
+    }
+  ]
+}

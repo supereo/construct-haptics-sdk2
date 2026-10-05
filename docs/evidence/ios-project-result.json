@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "scope": "Real Cordova iOS project generation, native plugin installation, preparation and project-file inclusion checks only. No Swift/Xcode compilation or device execution.",
+  "cordovaIOS": "8.1.1",
+  "nativeSwiftSourceSha256": "8967af96cf62560e7a4fbadb780c05c6a3dde8e798362ff92ee93f029ebdcffb",
+  "privacyResourceSha256": "418018c160ded561d379cee1510cfb6e0806573c7221177a5330d76ea4145990",
+  "xcodeProject": "app/platforms/ios/App.xcodeproj/project.pbxproj",
+  "swiftIncluded": [
+    "app/platforms/ios/App/Plugins/cordova-plugin-supereo-haptics/SupereoHaptics.swift"
+  ],
+  "privacyIncluded": [
+    "app/platforms/ios/App/Resources/SupereoHaptics.bundle/PrivacyInfo.xcprivacy"
+  ],
+  "nativeFeature": "SupereoHaptics",
+  "javascriptClobber": "cordova.plugins.SupereoHaptics",
+  "linkedFrameworks": [
+    "UIKit.framework",
+    "CoreHaptics.framework"
+  ],
+  "swiftVersion": "5.0",
+  "genericDemoPrepared": true,
+  "xcodeCompilation": "NOT RUN: Linux host has no Apple SDK or xcodebuild."
+}

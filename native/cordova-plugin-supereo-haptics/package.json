@@ -1,0 +1,10 @@
+{
+  "name": "cordova-plugin-supereo-haptics",
+  "version": "1.0.0",
+  "description": "Native haptic-only feedback for Supereo Haptics",
+  "license": "MIT",
+  "cordova": { "id": "cordova-plugin-supereo-haptics", "platforms": ["android", "ios"] },
+  "engines": { "cordovaDependencies": { "1.0.0": { "cordova-android": ">=15.0.0", "cordova-ios": ">=8.0.0" } } },
+  "keywords": ["ecosystem:cordova", "cordova-android", "cordova-ios", "haptics"],
+  "files": ["plugin.xml", "www", "src", "README.md", "LICENSE"]
+}

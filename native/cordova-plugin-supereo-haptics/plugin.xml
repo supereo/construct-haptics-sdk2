@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-supereo-haptics" version="1.0.0">
+  <name>Supereo Haptics</name>
+  <description>Native haptic-only feedback; local dispatch acceptance, no physical completion claims.</description>
+  <license>MIT</license>
+  <engines>
+    <engine name="cordova-android" version=">=15.0.0" />
+    <engine name="cordova-ios" version=">=8.0.0" />
+  </engines>
+  <js-module src="www/core.js" name="core" />
+  <js-module src="www/SupereoHaptics.js" name="SupereoHaptics">
+    <clobbers target="cordova.plugins.SupereoHaptics" />
+  </js-module>
+  <platform name="android">
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="SupereoHaptics"><param name="android-package" value="com.supereo.haptics.SupereoHaptics" /></feature>
+    </config-file>
+    <config-file target="AndroidManifest.xml" parent="/*">
+      <uses-permission android:name="android.permission.VIBRATE" />
+    </config-file>
+    <source-file src="src/android/SupereoHaptics.java" target-dir="src/com/supereo/haptics" />
+  </platform>
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="SupereoHaptics"><param name="ios-package" value="SupereoHaptics" /></feature>
+    </config-file>
+    <source-file src="src/ios/SupereoHaptics.swift" />
+    <framework src="UIKit.framework" />
+    <framework src="CoreHaptics.framework" />
+    <resource-file src="src/ios/SupereoHaptics.bundle" target="SupereoHaptics.bundle" />
+  </platform>
+</plugin>

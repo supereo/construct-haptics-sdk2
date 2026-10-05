@@ -1,0 +1,239 @@
+{
+  "feedback": {
+    "actions": [
+      {
+        "id": "play-feedback",
+        "scriptName": "PlayFeedback",
+        "highlight": true,
+        "params": [
+          {
+            "id": "feedback",
+            "type": "combo",
+            "initialValue": "selection-tick",
+            "items": [
+              "selection-tick",
+              "light-impact",
+              "medium-impact",
+              "strong-impact",
+              "soft-impact",
+              "crisp-impact",
+              "success",
+              "warning",
+              "error"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stop",
+        "scriptName": "Stop",
+        "highlight": true
+      },
+      {
+        "id": "play-pattern",
+        "scriptName": "PlayPattern",
+        "highlight": true,
+        "params": [
+          {
+            "id": "name",
+            "type": "string",
+            "initialValue": "\"capture\""
+          }
+        ]
+      }
+    ]
+  },
+  "settings": {
+    "actions": [
+      {
+        "id": "set-enabled",
+        "scriptName": "SetEnabled",
+        "params": [
+          {
+            "id": "enabled",
+            "type": "combo",
+            "initialValue": "enabled",
+            "items": [
+              "disabled",
+              "enabled"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "set-strength",
+        "scriptName": "SetStrength",
+        "params": [
+          {
+            "id": "strength",
+            "type": "number",
+            "initialValue": "1"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "id": "is-enabled",
+        "scriptName": "IsEnabled"
+      }
+    ]
+  },
+  "capabilities": {
+    "actions": [
+      {
+        "id": "refresh-capabilities",
+        "scriptName": "RefreshCapabilities"
+      }
+    ],
+    "conditions": [
+      {
+        "id": "is-ready",
+        "scriptName": "IsReady"
+      },
+      {
+        "id": "native-bridge-available",
+        "scriptName": "NativeBridgeAvailable"
+      },
+      {
+        "id": "haptic-hardware-available",
+        "scriptName": "HapticHardwareAvailable"
+      },
+      {
+        "id": "intensity-control-supported",
+        "scriptName": "IntensityControlSupported"
+      },
+      {
+        "id": "advanced-patterns-supported",
+        "scriptName": "AdvancedPatternsSupported"
+      },
+      {
+        "id": "sharpness-control-supported",
+        "scriptName": "SharpnessControlSupported"
+      },
+      {
+        "id": "primitives-supported",
+        "scriptName": "PrimitivesSupported"
+      },
+      {
+        "id": "envelopes-supported",
+        "scriptName": "EnvelopesSupported"
+      },
+      {
+        "id": "is-preview-simulation",
+        "scriptName": "IsPreviewSimulation"
+      },
+      {
+        "id": "on-capabilities-refreshed",
+        "scriptName": "OnCapabilitiesRefreshed",
+        "isTrigger": true
+      }
+    ]
+  },
+  "advanced": {
+    "actions": [
+      {
+        "id": "register-pattern",
+        "scriptName": "RegisterPattern",
+        "params": [
+          {
+            "id": "name",
+            "type": "string",
+            "initialValue": "\"capture\""
+          },
+          {
+            "id": "json",
+            "type": "string",
+            "initialValue": "\"\""
+          }
+        ]
+      },
+      {
+        "id": "set-overlap-policy",
+        "scriptName": "SetOverlapPolicy",
+        "params": [
+          {
+            "id": "policy",
+            "type": "combo",
+            "initialValue": "replace",
+            "items": [
+              "replace",
+              "ignore"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "diagnostics": {
+    "conditions": [
+      {
+        "id": "on-accepted",
+        "scriptName": "OnAccepted",
+        "isTrigger": true
+      },
+      {
+        "id": "on-rejected",
+        "scriptName": "OnRejected",
+        "isTrigger": true
+      },
+      {
+        "id": "on-error",
+        "scriptName": "OnError",
+        "isTrigger": true
+      },
+      {
+        "id": "on-preview",
+        "scriptName": "OnPreview",
+        "isTrigger": true
+      }
+    ],
+    "expressions": [
+      {
+        "id": "backend",
+        "expressionName": "Backend",
+        "returnType": "string"
+      },
+      {
+        "id": "fallback-info",
+        "expressionName": "FallbackInfo",
+        "returnType": "string"
+      },
+      {
+        "id": "capabilities-json",
+        "expressionName": "CapabilitiesJSON",
+        "returnType": "string"
+      },
+      {
+        "id": "last-result-json",
+        "expressionName": "LastResultJSON",
+        "returnType": "string"
+      },
+      {
+        "id": "last-error",
+        "expressionName": "LastError",
+        "returnType": "string"
+      },
+      {
+        "id": "last-request-id",
+        "expressionName": "LastRequestId",
+        "returnType": "string"
+      },
+      {
+        "id": "last-feedback",
+        "expressionName": "LastFeedback",
+        "returnType": "string"
+      },
+      {
+        "id": "strength",
+        "expressionName": "Strength",
+        "returnType": "number"
+      },
+      {
+        "id": "last-was-approximated",
+        "expressionName": "LastWasApproximated",
+        "returnType": "number"
+      }
+    ]
+  }
+}

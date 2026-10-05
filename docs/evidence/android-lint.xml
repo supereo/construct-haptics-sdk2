@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.10.1">
+
+    <issue
+        id="ManifestOrder"
+        severity="Warning"
+        message="`&lt;uses-permission>` tag appears after `&lt;application>` tag"
+        category="Correctness"
+        priority="5"
+        summary="Incorrect order of elements in manifest"
+        explanation="The `&lt;application>` tag should appear after the elements which declare which version you need, which features you need, which libraries you need, and so on. In the past there have been subtle bugs (such as themes not getting applied correctly) when the `&lt;application>` tag appears before some of these other elements, so it&apos;s best to order your manifest in the logical dependency order."
+        errorLine1="    &lt;uses-permission android:name=&quot;android.permission.VIBRATE&quot; />"
+        errorLine2="     ~~~~~~~~~~~~~~~">
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/AndroidManifest.xml"
+            line="21"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="VectorRaster"
+        severity="Warning"
+        message="Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more"
+        category="Correctness"
+        priority="5"
+        summary="Vector Image Generation"
+        explanation="Vector icons require API 21 or API 24 depending on used features, but when `minSdkVersion` is less than 21 or 24 and Android Gradle plugin 1.4 or higher is used, a vector drawable placed in the `drawable` folder is automatically moved to `drawable-anydpi-v21` or `drawable-anydpi-v24` and bitmap images are generated for different screen resolutions for backwards compatibility.&#xA;&#xA;However, there are some limitations to this raster image generation, and this lint check flags elements and attributes that are not fully supported. You should manually check whether the generated output is acceptable for those older devices."
+        errorLine1="    android:width=&quot;512dp&quot;"
+        errorLine2="                   ~~~~~">
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/drawable/ic_cdv_splashscreen.xml"
+            line="20"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="UseRequiresApi"
+        severity="Warning"
+        message="Use `@RequiresApi(26) instead of `@TargetApi` to propagate the requirement to callers of `vibrate`"
+        category="Correctness"
+        priority="2"
+        summary="Use `@RequiresApi` instead of `@TargetApi`"
+        explanation="The `@TargetApi` annotation only *suppresses* API warnings locally. `@RequiresApi` on the other hand will propagate the requirement out to any *callers* of this API, making sure that they either perform API level checks (using for example `SDK_INT`), or defining `@RequiresApi` annotations themselves.&#xA;&#xA;(The `@TargetApi` annotation predates `@RequiresApi`, and was introduced as an early way to *suppress* lint API warnings for a particular API level. Accidentally using `@TargetApi` can lead to crashes since there is no check that other calls to this method actually check that the call is safe.)"
+        errorLine1="    @TargetApi(26) // Called only after API26+ creates a VibrationEffect; older path returns above."
+        errorLine2="    ~~~~~~~~~~~~~~">
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/java/com/supereo/haptics/SupereoHaptics.java"
+            line="227"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UseRequiresApi"
+        severity="Warning"
+        message="Use `@RequiresApi(30) instead of `@TargetApi` to propagate the requirement to callers of `queryPrimitiveSupport`"
+        category="Correctness"
+        priority="2"
+        summary="Use `@RequiresApi` instead of `@TargetApi`"
+        explanation="The `@TargetApi` annotation only *suppresses* API warnings locally. `@RequiresApi` on the other hand will propagate the requirement out to any *callers* of this API, making sure that they either perform API level checks (using for example `SDK_INT`), or defining `@RequiresApi` annotations themselves.&#xA;&#xA;(The `@TargetApi` annotation predates `@RequiresApi`, and was introduced as an early way to *suppress* lint API warnings for a particular API level. Accidentally using `@TargetApi` can lead to crashes since there is no check that other calls to this method actually check that the call is safe.)"
+        errorLine1="    @TargetApi(30)"
+        errorLine2="    ~~~~~~~~~~~~~~">
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/java/com/supereo/haptics/SupereoHaptics.java"
+            line="293"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UseRequiresApi"
+        severity="Warning"
+        message="Use `@RequiresApi(31) instead of `@TargetApi` to propagate the requirement to callers of `queryPrimitiveDurations`"
+        category="Correctness"
+        priority="2"
+        summary="Use `@RequiresApi` instead of `@TargetApi`"
+        explanation="The `@TargetApi` annotation only *suppresses* API warnings locally. `@RequiresApi` on the other hand will propagate the requirement out to any *callers* of this API, making sure that they either perform API level checks (using for example `SDK_INT`), or defining `@RequiresApi` annotations themselves.&#xA;&#xA;(The `@TargetApi` annotation predates `@RequiresApi`, and was introduced as an early way to *suppress* lint API warnings for a particular API level. Accidentally using `@TargetApi` can lead to crashes since there is no check that other calls to this method actually check that the call is safe.)"
+        errorLine1="    @TargetApi(31)"
+        errorLine2="    ~~~~~~~~~~~~~~">
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/java/com/supereo/haptics/SupereoHaptics.java"
+            line="296"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UseRequiresApi"
+        severity="Warning"
+        message="Use `@RequiresApi(30) instead of `@TargetApi` to propagate the requirement to callers of `primitiveComposition`"
+        category="Correctness"
+        priority="2"
+        summary="Use `@RequiresApi` instead of `@TargetApi`"
+        explanation="The `@TargetApi` annotation only *suppresses* API warnings locally. `@RequiresApi` on the other hand will propagate the requirement out to any *callers* of this API, making sure that they either perform API level checks (using for example `SDK_INT`), or defining `@RequiresApi` annotations themselves.&#xA;&#xA;(The `@TargetApi` annotation predates `@RequiresApi`, and was introduced as an early way to *suppress* lint API warnings for a particular API level. Accidentally using `@TargetApi` can lead to crashes since there is no check that other calls to this method actually check that the call is safe.)"
+        errorLine1="    @TargetApi(30) // Called only after API30 guard; multiple-tap duration queries are guarded at31."
+        errorLine2="    ~~~~~~~~~~~~~~">
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/java/com/supereo/haptics/SupereoHaptics.java"
+            line="413"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UseRequiresApi"
+        severity="Warning"
+        message="Use `@RequiresApi(36) instead of `@TargetApi` to propagate the requirement to users of `Api36`"
+        category="Correctness"
+        priority="2"
+        summary="Use `@RequiresApi` instead of `@TargetApi`"
+        explanation="The `@TargetApi` annotation only *suppresses* API warnings locally. `@RequiresApi` on the other hand will propagate the requirement out to any *callers* of this API, making sure that they either perform API level checks (using for example `SDK_INT`), or defining `@RequiresApi` annotations themselves.&#xA;&#xA;(The `@TargetApi` annotation predates `@RequiresApi`, and was introduced as an early way to *suppress* lint API warnings for a particular API level. Accidentally using `@TargetApi` can lead to crashes since there is no check that other calls to this method actually check that the call is safe.)"
+        errorLine1="    @TargetApi(36) // Every entry point is protected by SDK_INT>=36 and hardware support checks."
+        errorLine2="    ~~~~~~~~~~~~~~">
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/java/com/supereo/haptics/SupereoHaptics.java"
+            line="477"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        severity="Warning"
+        message="The resource `R.xml.config` appears to be unused"
+        category="Performance"
+        priority="3"
+        summary="Unused resources"
+        explanation="Unused resources make applications larger and slow down builds.&#xA;&#xA;&#xA;The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.&#xA;&#xA;You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests =true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests =true.&#xA;,"
+        errorLine1="&lt;widget id=&quot;com.supereo.haptics.smoke&quot; version=&quot;1.0.0&quot; xmlns=&quot;http://www.w3.org/ns/widgets&quot; xmlns:cdv=&quot;http://cordova.apache.org/ns/1.0&quot;>"
+        errorLine2="^">
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/xml/config.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        severity="Warning"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details"
+        category="Usability:Icons"
+        priority="6"
+        summary="The launcher icon shape should use a distinct silhouette"
+        explanation="According to the Android Design Guide (https://d.android.com/r/studio-ui/designer/material/iconography) your launcher icons should &quot;use a distinct silhouette&quot;, a &quot;three-dimensional, front view, with a slight perspective as if viewed from above, so that users perceive some depth.&quot;&#xA;&#xA;The unique silhouette implies that your launcher icon should not be a filled square.">
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        severity="Warning"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details"
+        category="Usability:Icons"
+        priority="6"
+        summary="The launcher icon shape should use a distinct silhouette"
+        explanation="According to the Android Design Guide (https://d.android.com/r/studio-ui/designer/material/iconography) your launcher icons should &quot;use a distinct silhouette&quot;, a &quot;three-dimensional, front view, with a slight perspective as if viewed from above, so that users perceive some depth.&quot;&#xA;&#xA;The unique silhouette implies that your launcher icon should not be a filled square.">
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconDipSize"
+        severity="Warning"
+        message="The image `ic_launcher_background.png` varies significantly in its density-independent (dip) size across the various density versions: mipmap-hdpi-v26/ic_launcher_background.png: 48x48 dp (72x72 px), mipmap-ldpi-v26/ic_launcher_background.png: 48x48 dp (36x36 px), mipmap-mdpi-v26/ic_launcher_background.png: 48x48 dp (48x48 px), mipmap-xhdpi-v26/ic_launcher_background.png: 108x108 dp (216x216 px), mipmap-xxhdpi-v26/ic_launcher_background.png: 108x108 dp (324x324 px), mipmap-xxxhdpi-v26/ic_launcher_background.png: 108x108 dp (432x432 px)"
+        category="Usability:Icons"
+        priority="5"
+        summary="Icon density-independent size validation"
+        explanation="Checks the all icons which are provided in multiple densities, all compute to roughly the same density-independent pixel (`dip`) size. This catches errors where images are either placed in the wrong folder, or icons are changed to new sizes but some folders are forgotten.">
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-mdpi-v26/ic_launcher_background.png"/>
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-ldpi-v26/ic_launcher_background.png"/>
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-hdpi-v26/ic_launcher_background.png"/>
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-xxxhdpi-v26/ic_launcher_background.png"/>
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-xxhdpi-v26/ic_launcher_background.png"/>
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-xhdpi-v26/ic_launcher_background.png"/>
+    </issue>
+
+    <issue
+        id="IconDipSize"
+        severity="Warning"
+        message="The image `ic_launcher_foreground.png` varies significantly in its density-independent (dip) size across the various density versions: mipmap-hdpi-v26/ic_launcher_foreground.png: 48x48 dp (72x72 px), mipmap-ldpi-v26/ic_launcher_foreground.png: 48x48 dp (36x36 px), mipmap-mdpi-v26/ic_launcher_foreground.png: 48x48 dp (48x48 px), mipmap-xhdpi-v26/ic_launcher_foreground.png: 108x108 dp (216x216 px), mipmap-xxhdpi-v26/ic_launcher_foreground.png: 108x108 dp (324x324 px), mipmap-xxxhdpi-v26/ic_launcher_foreground.png: 108x108 dp (432x432 px)"
+        category="Usability:Icons"
+        priority="5"
+        summary="Icon density-independent size validation"
+        explanation="Checks the all icons which are provided in multiple densities, all compute to roughly the same density-independent pixel (`dip`) size. This catches errors where images are either placed in the wrong folder, or icons are changed to new sizes but some folders are forgotten.">
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-mdpi-v26/ic_launcher_foreground.png"/>
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-ldpi-v26/ic_launcher_foreground.png"/>
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-hdpi-v26/ic_launcher_foreground.png"/>
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-xxxhdpi-v26/ic_launcher_foreground.png"/>
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-xxhdpi-v26/ic_launcher_foreground.png"/>
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-xhdpi-v26/ic_launcher_foreground.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        severity="Warning"
+        message="The following unrelated icon files have identical contents: ic_launcher_foreground.png, ic_launcher.png"
+        category="Usability:Icons"
+        priority="3"
+        summary="Duplicated icons under different names"
+        explanation="If an icon is repeated under different names, you can consolidate and just use one of the icons and delete the others to make your application smaller. However, duplicated icons usually are not intentional and can sometimes point to icons that were accidentally overwritten or accidentally not updated.">
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-hdpi/ic_launcher.png"/>
+        <location
+            file="/tmp/supereo-native-verified-check/app/platforms/android/app/src/main/res/mipmap-hdpi-v26/ic_launcher_foreground.png"/>
+    </issue>
+
+</issues>

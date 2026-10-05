@@ -1,0 +1,270 @@
+{
+  "languageTag": "en-US",
+  "fileDescription": "English strings for Supereo Haptics 1.0.0.0.",
+  "text": {
+    "plugins": {
+      "supereo_haptics": {
+        "name": "Supereo Haptics",
+        "description": "Native mobile feedback with honest capabilities, portable custom patterns and a visible preview simulation.",
+        "help-url": "https://github.com/supereo/construct-haptics-sdk2/blob/main/docs/INSTALLATION.md",
+        "properties": {
+          "enabled": {
+            "name": "Enabled",
+            "desc": "Initial player preference. Disabling cancels addon work; semantic feedback already submitted to the operating system may not be cancellable."
+          },
+          "strength": {
+            "name": "Overall strength",
+            "desc": "Initial strength from 0 to 1: 0 is silent, 0.35 is Light, 1 is Normal. Some native semantic effects only offer discrete strengths."
+          },
+          "native-required": {
+            "name": "Native required",
+            "desc": "Keep enabled for Android and iOS exports. A missing native bridge produces an explicit error. Disable only to opt into a clearly labeled visual simulation."
+          },
+          "preview-simulation": {
+            "name": "Preview simulation",
+            "desc": "When Native required is disabled and no native bridge is available, show requested feedback and pattern timing visually. No hardware is exercised. Native required always takes priority."
+          },
+          "overlap": {
+            "name": "Overlap policy",
+            "desc": "Replace drops the active addon pattern; Ignore skips new requests while the previous estimated scheduling window is active.",
+            "items": {
+              "replace": "Replace active pattern",
+              "ignore": "Ignore new request while busy"
+            }
+          },
+          "duplicate-window-ms": {
+            "name": "Duplicate protection (ms)",
+            "desc": "Suppress identical rapidly repeated feedback within this interval, from 0 to 1000 ms. Default 40 ms helps avoid duplicate event triggers."
+          },
+          "bridge-wait-ms": {
+            "name": "Bridge wait limit (ms)",
+            "desc": "Maximum initial native readiness wait, from 250 to 10000 ms. Default 2500 ms prevents a missing bridge from blocking startup indefinitely."
+          }
+        },
+        "aceCategories": {
+          "feedback": "Feedback",
+          "settings": "Player settings",
+          "capabilities": "Capabilities",
+          "advanced": "Custom patterns",
+          "diagnostics": "Diagnostics"
+        },
+        "conditions": {
+          "is-ready": {
+            "list-name": "Capability check is ready",
+            "display-text": "Capability check is ready",
+            "description": "The initial bounded capability check has finished, including unavailable backends."
+          },
+          "is-enabled": {
+            "list-name": "Haptics are enabled",
+            "display-text": "Haptics are enabled",
+            "description": "Check the explicit player haptics setting."
+          },
+          "native-bridge-available": {
+            "list-name": "Native bridge available",
+            "display-text": "Native bridge is available",
+            "description": "The Cordova native bridge was found; use Haptic hardware available to check the device."
+          },
+          "haptic-hardware-available": {
+            "list-name": "Haptic hardware available",
+            "display-text": "Haptic hardware is available",
+            "description": "The native platform reports appropriate vibration or haptic hardware. It does not promise every requested effect will play."
+          },
+          "intensity-control-supported": {
+            "list-name": "Intensity control supported",
+            "display-text": "Intensity control is supported",
+            "description": "Hardware and backend support meaningful variable intensity; semantic feedback may still use discrete strengths."
+          },
+          "advanced-patterns-supported": {
+            "list-name": "Advanced patterns supported",
+            "display-text": "Advanced patterns are supported",
+            "description": "A native backend can schedule custom patterns. Consult CapabilitiesJSON for its exact curve, sharpness, primitive and envelope features."
+          },
+          "sharpness-control-supported": {
+            "list-name": "Sharpness control supported",
+            "display-text": "Sharpness control is supported",
+            "description": "The backend supports a sharpness parameter. Android does not generally provide Core Haptics-equivalent sharpness control."
+          },
+          "primitives-supported": {
+            "list-name": "Native primitives supported",
+            "display-text": "Native haptic primitives are supported",
+            "description": "The Android device reports composition support for relevant native primitives. Exact supported primitives are listed in CapabilitiesJSON."
+          },
+          "envelopes-supported": {
+            "list-name": "Android envelopes supported",
+            "display-text": "Android haptic envelopes are supported",
+            "description": "The guarded Android envelope API and matching hardware capability are available."
+          },
+          "is-preview-simulation": {
+            "list-name": "Preview simulation active",
+            "display-text": "Preview simulation is active",
+            "description": "Requests are displayed visually; no native hardware is being exercised."
+          },
+          "on-accepted": {
+            "list-name": "On feedback accepted",
+            "display-text": "On feedback accepted",
+            "description": "A play request was accepted locally by the native backend or visible simulation. This is not a physical completion callback."
+          },
+          "on-rejected": {
+            "list-name": "On feedback rejected",
+            "display-text": "On feedback rejected",
+            "description": "A play request was skipped, disabled, duplicated, busy, backgrounded or failed. Read LastResultJSON for the reason."
+          },
+          "on-error": {
+            "list-name": "On haptic error",
+            "display-text": "On haptic error",
+            "description": "A structured validation, missing native bridge or backend error occurred. Read LastError and LastResultJSON."
+          },
+          "on-preview": {
+            "list-name": "On preview simulated",
+            "display-text": "On preview simulated",
+            "description": "A feedback request was shown by the visual simulation. No native device was tested."
+          },
+          "on-capabilities-refreshed": {
+            "list-name": "On capabilities refreshed",
+            "display-text": "On capabilities refreshed",
+            "description": "The Refresh capabilities action finished. Check LastError if the native query failed."
+          }
+        },
+        "actions": {
+          "play-feedback": {
+            "list-name": "Play feedback",
+            "display-text": "Play [b]{0}[/b] feedback",
+            "description": "Request native selection, impact or notification feedback. Acceptance does not prove that the hardware produced a sensation.",
+            "params": {
+              "feedback": {
+                "name": "Feedback",
+                "desc": "Choose the feel or meaning of this gameplay moment. Device settings and hardware affect the sensation.",
+                "items": {
+                  "selection-tick": "Selection tick",
+                  "light-impact": "Light impact",
+                  "medium-impact": "Medium impact",
+                  "strong-impact": "Strong impact",
+                  "soft-impact": "Soft impact",
+                  "crisp-impact": "Crisp impact",
+                  "success": "Success sequence",
+                  "warning": "Warning sequence",
+                  "error": "Error sequence"
+                }
+              }
+            }
+          },
+          "stop": {
+            "list-name": "Stop feedback",
+            "display-text": "Stop Supereo Haptics feedback",
+            "description": "Cancel this addon's active pattern and pending requests. UIKit semantic feedback may already have been handed to the operating system."
+          },
+          "set-enabled": {
+            "list-name": "Set haptics enabled",
+            "display-text": "Set haptics [b]{0}[/b]",
+            "description": "Apply the player's haptics preference. Disabling immediately drops this addon's active work.",
+            "params": {
+              "enabled": {
+                "name": "Haptics",
+                "desc": "Choose Disabled for players who prefer no feedback.",
+                "items": {
+                  "disabled": "Disabled",
+                  "enabled": "Enabled"
+                }
+              }
+            }
+          },
+          "set-strength": {
+            "list-name": "Set overall strength",
+            "display-text": "Set overall haptic strength to [b]{0}[/b]",
+            "description": "Set the overall strength from 0 to 1. Strength changes drop the active pattern and apply to future requests; discrete native effects may use coarser fallback choices.",
+            "params": {
+              "strength": {
+                "name": "Strength",
+                "desc": "0 is silent, 0.35 is a useful Light setting, and 1 is Normal. Must be from 0 to 1."
+              }
+            }
+          },
+          "register-pattern": {
+            "list-name": "Register custom pattern",
+            "display-text": "Register custom pattern [b]{0}[/b] from {1}",
+            "description": "Validate and store a version 1 portable pattern. Register up to 64 names at layout start; ordinary Play feedback actions do not need JSON.",
+            "params": {
+              "name": {
+                "name": "Pattern name",
+                "desc": "A name with 1 to 80 characters, used later by Play custom pattern."
+              },
+              "json": {
+                "name": "Pattern JSON",
+                "desc": "Version 1 JSON containing bounded transient taps and continuous events. See the custom-pattern documentation."
+              }
+            }
+          },
+          "play-pattern": {
+            "list-name": "Play custom pattern",
+            "display-text": "Play custom pattern [b]{0}[/b]",
+            "description": "Play a registered custom pattern by name. The backend reports approximations in LastResultJSON.",
+            "params": {
+              "name": {
+                "name": "Pattern name",
+                "desc": "Use the exact name registered with Register custom pattern."
+              }
+            }
+          },
+          "set-overlap-policy": {
+            "list-name": "Set overlap policy",
+            "display-text": "Set feedback overlap policy to [b]{0}[/b]",
+            "description": "Replace cancels the addon's previous pattern; Ignore keeps it and rejects new requests during its estimated scheduling window. This window is not hardware completion.",
+            "params": {
+              "policy": {
+                "name": "Policy",
+                "desc": "Use Replace for immediate game interactions, or Ignore for sequences that should finish.",
+                "items": {
+                  "replace": "Replace active pattern",
+                  "ignore": "Ignore new request while busy"
+                }
+              }
+            }
+          },
+          "refresh-capabilities": {
+            "list-name": "Refresh capabilities",
+            "display-text": "Refresh haptic capabilities",
+            "description": "Read actual native capabilities again and trigger On capabilities refreshed. Useful after returning to the foreground."
+          }
+        },
+        "expressions": {
+          "backend": {
+            "description": "Current native backend, preview-simulation, initializing or unavailable.",
+            "translated-name": "Backend"
+          },
+          "fallback-info": {
+            "description": "Human-readable capability and fallback information for this device.",
+            "translated-name": "FallbackInfo"
+          },
+          "capabilities-json": {
+            "description": "Structured native capability flags and any per-effect or per-primitive support details.",
+            "translated-name": "CapabilitiesJSON"
+          },
+          "last-result-json": {
+            "description": "Structured dispatch acceptance, request ID, approximation, fallback, reason and completion visibility. Acceptance is not proof of physical feedback.",
+            "translated-name": "LastResultJSON"
+          },
+          "last-error": {
+            "description": "The last structured error message, or an empty string after a successful result.",
+            "translated-name": "LastError"
+          },
+          "last-request-id": {
+            "description": "The identifier associated with the most recent response.",
+            "translated-name": "LastRequestId"
+          },
+          "last-feedback": {
+            "description": "The last requested preset or registered custom-pattern name.",
+            "translated-name": "LastFeedback"
+          },
+          "strength": {
+            "description": "Overall player strength from 0 to 1.",
+            "translated-name": "Strength"
+          },
+          "last-was-approximated": {
+            "description": "1 if the last dispatched effect used an approximation; otherwise 0.",
+            "translated-name": "LastWasApproximated"
+          }
+        }
+      }
+    }
+  }
+}

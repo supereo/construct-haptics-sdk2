@@ -1,0 +1,199 @@
+
+> supereo-haptics@1.0.0 verify
+> npm run build && npm run check && npm test && node --test tests/compiled-addon.cjs
+
+
+> supereo-haptics@1.0.0 build
+> node tools/build.cjs
+
+Packaged Supereo_Haptics-1.0.0.c3addon, cordova-plugin-supereo-haptics-1.0.0.tgz, cordova-plugin-supereo-haptics-1.0.0.zip, supereo-haptics-source-1.0.0.zip; SHA256SUMS written.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+
+> supereo-haptics@1.0.0 check
+> node tools/check.cjs
+
+Official schema PASS: addon/addon.json
+Official schema PASS: addon/aces.json
+Official schema PASS: addon/lang/en-US.json
+Identity, versions, paths, and shared-source consistency PASS.
+
+> supereo-haptics@1.0.0 test
+> node --test tests/*.test.cjs
+
+✔ main thread messaging: native initialization, semantic actions, metadata, and capability refresh (15.125358ms)
+✔ main thread messaging: native-required mode rejects missing bridges and never invokes browser vibration (3.522905ms)
+✔ main thread messaging: explicit preview opt-in simulates feedback without hardware claims (6.380589ms)
+✔ main thread messaging: native errors propagate as rejected feedback rather than successful fallback (2.836792ms)
+✔ main thread messaging: state actions stop active work, use global strength once, and suppress disabled feedback (3.512059ms)
+✔ main thread messaging: custom patterns validate before playback and do not serialize player settings (3.304145ms)
+✔ worker messaging: native initialization, semantic actions, metadata, and capability refresh (4.932868ms)
+✔ worker messaging: native-required mode rejects missing bridges and never invokes browser vibration (2.467045ms)
+✔ worker messaging: explicit preview opt-in simulates feedback without hardware claims (3.166969ms)
+✔ worker messaging: native errors propagate as rejected feedback rather than successful fallback (3.5861ms)
+✔ worker messaging: state actions stop active work, use global strength once, and suppress disabled feedback (2.441627ms)
+✔ worker messaging: custom patterns validate before playback and do not serialize player settings (2.812445ms)
+✔ overlap-ignore drops a second busy request; replace cancels before the replacement (3.111675ms)
+✔ rapid duplicates ignore request IDs and labels, while Stop resets suppression (2.49687ms)
+✔ pause, resume, visibility, and pagehide stop work without replaying it (3.162573ms)
+✔ queued native feedback is invalidated on Stop, including an in-flight late acceptance (3.159688ms)
+✔ a blocked native transport has a bounded request queue (2.950052ms)
+✔ bridge initialization errors are queryable and do not claim working hardware (2.028595ms)
+✔ the DOM play watchdog rejects a hung bridge and requests native cancellation (2.313644ms)
+✔ the initialization watchdog settles readiness without claiming hardware after a hung capability query (2.083868ms)
+✔ release drops late native replies and subsequent runtime actions (5.883381ms)
+✔ native accepted:false replies retain error metadata and trigger rejection (2.606375ms)
+✔ named pattern registration is bounded and existing names can be replaced (12.562288ms)
+✔ play waits for an asynchronous strength update before dispatching native feedback (2.867888ms)
+✔ rapid state changes preserve ordered snapshots and play uses the latest strength (2.946837ms)
+✔ an initialization state failure blocks playback until capability refresh successfully reinitializes (2.635269ms)
+✔ release during a delayed initial capability query prevents subsequent native state updates (2.394856ms)
+✔ failed asynchronous state updates block playback and refresh retries the settings (2.998505ms)
+✔ queued cue freshness accepts the 1000 ms boundary (2.495358ms)
+✔ queued cue freshness drops cues older than 1000 ms after bridge recovery (2.177138ms)
+✔ cue freshness is checked after a delayed native settings barrier (3.246178ms)
+✔ cue freshness is checked after delayed initial capabilities and settings (2.007102ms)
+✔ cue freshness is checked again after a slow replacement Stop and before native dispatch (1.978029ms)
+✔ Cordova API uses the SupereoHaptics service and preserves structured success replies (3.959092ms)
+✔ custom patterns are validated and normalized before crossing Cordova exec (1.93947ms)
+▶ malformed requests reject as Promises without invoking the native transport
+  ✔ null (1.0885ms)
+  ✔ array (0.627505ms)
+  ✔ unknown kind (0.678222ms)
+  ✔ unknown impact (1.040747ms)
+  ✔ unknown notification (1.433189ms)
+  ✔ invalid pattern (0.76354ms)
+  ✔ negative strength (0.741607ms)
+  ✔ too large strength (0.819454ms)
+  ✔ nonfinite strength (0.751671ms)
+  ✔ string strength (0.734005ms)
+  ✔ unknown overlap (0.734917ms)
+  ✔ number request id (1.244834ms)
+  ✔ oversized request id (0.791672ms)
+✔ malformed requests reject as Promises without invoking the native transport (14.000814ms)
+▶ state validation rejects coercion and invalid ranges before exec
+  ✔ null (1.043431ms)
+  ✔ [] (1.490615ms)
+  ✔ {"enabled":1} (1.046335ms)
+  ✔ {"enabled":"false"} (0.949099ms)
+  ✔ {"strength":-1} (0.967657ms)
+  ✔ {"strength":null} (1.301871ms)
+  ✔ {"strength":"0.5"} (0.795819ms)
+✔ state validation rejects coercion and invalid ranges before exec (8.30683ms)
+▶ native failure objects and legacy strings become stable Error rejections
+  ✔ HARDWARE_UNAVAILABLE: No haptics engine (0.761297ms)
+  ✔ NATIVE_ERROR: legacy native error (0.646604ms)
+  ✔ NATIVE_ERROR: Native haptics request failed. (0.949711ms)
+✔ native failure objects and legacy strings become stable Error rejections (2.731394ms)
+✔ an exec exception rejects promptly and clears its watchdog (1.212185ms)
+✔ a play watchdog timeout requests native cancellation and ignores late callbacks (0.881497ms)
+✔ capability timeout fails without claiming a native backend or starting feedback (0.790751ms)
+✔ duplicate native callbacks settle a request exactly once (0.735528ms)
+✔ normalization accepts JSON and object inputs, sorts events, and preserves caller data (2.291161ms)
+✔ valid inclusive duration/event/point boundaries are accepted (0.947818ms)
+▶ malformed JSON, top-level schema, empty, excessive, and sparse events are rejected
+  ✔ malformed JSON (0.416588ms)
+  ✔ oversized JSON (0.091999ms)
+  ✔ null (0.145369ms)
+  ✔ array (0.121072ms)
+  ✔ boolean (0.077296ms)
+  ✔ number (0.088183ms)
+  ✔ missing version (0.127512ms)
+  ✔ wrong version (0.125379ms)
+  ✔ unknown field (0.08597ms)
+  ✔ missing events (0.170517ms)
+  ✔ non-array events (0.070757ms)
+  ✔ empty events (0.093361ms)
+  ✔ too many events (0.053941ms)
+  ✔ sparse events (0.06025ms)
+  ✔ null event (0.096015ms)
+  ✔ array event (0.055454ms)
+✔ malformed JSON, top-level schema, empty, excessive, and sparse events are rejected (3.206979ms)
+▶ event timing and unit ranges reject coercion, fractions, nonfinite numbers, and wrong fields
+  ✔ missing type (0.134492ms)
+  ✔ unknown type (0.078157ms)
+  ✔ unknown event field (0.076355ms)
+  ✔ negative time (0.050706ms)
+  ✔ fractional time (0.039439ms)
+  ✔ string time (0.037366ms)
+  ✔ infinite time (0.036245ms)
+  ✔ transient exceeds duration (0.041072ms)
+  ✔ transient with duration (0.054082ms)
+  ✔ missing intensity (0.056866ms)
+  ✔ negative intensity (0.038498ms)
+  ✔ intensity above one (0.058357ms)
+  ✔ string intensity (0.042024ms)
+  ✔ null intensity (0.034181ms)
+  ✔ NaN intensity (0.03319ms)
+  ✔ infinite intensity (0.06671ms)
+  ✔ sharpness above one (0.054382ms)
+  ✔ null sharpness (0.050046ms)
+  ✔ boolean sharpness (0.05357ms)
+  ✔ zero continuous duration (0.047822ms)
+  ✔ negative duration (0.037577ms)
+  ✔ fractional duration (0.036655ms)
+  ✔ string duration (0.032819ms)
+  ✔ missing continuous duration (0.045599ms)
+  ✔ continuous end exceeds duration (0.042094ms)
+✔ event timing and unit ranges reject coercion, fractions, nonfinite numbers, and wrong fields (2.932116ms)
+▶ continuous curves enforce event-relative timing and bounded ordered control points
+  ✔ curves on transient (0.087742ms)
+  ✔ null curves (0.083205ms)
+  ✔ array curves (0.04625ms)
+  ✔ empty curves (0.051938ms)
+  ✔ unknown parameter (0.045728ms)
+  ✔ empty points (0.053991ms)
+  ✔ non-array points (0.048984ms)
+  ✔ too many points (0.045959ms)
+  ✔ sparse points (0.110306ms)
+  ✔ null point (0.051007ms)
+  ✔ unknown point field (0.049875ms)
+  ✔ negative time (0.049374ms)
+  ✔ fractional time (0.04651ms)
+  ✔ absolute time beyond event duration (0.048643ms)
+  ✔ duplicate times (0.095644ms)
+  ✔ descending times (3.448633ms)
+  ✔ value above one (0.071268ms)
+  ✔ missing value (0.057417ms)
+  ✔ nonfinite value (0.048243ms)
+✔ continuous curves enforce event-relative timing and bounded ordered control points (5.387092ms)
+✔ the nine named presets retain semantic identity and return independent values (0.294904ms)
+✔ shared core loads without Node globals in a browser/worker and matches CommonJS normalization (1.830676ms)
+✔ full JavaScript pipeline uses valid native fields and the packaged validator in main thread mode (16.390894ms)
+✔ full JavaScript pipeline uses valid native fields and the packaged validator in worker mode (6.120297ms)
+ℹ tests 134
+ℹ suites 0
+ℹ pass 134
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 178.986649
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+✔ the generated addon contains exactly its declared files and matches its checksum (1.831919ms)
+✔ minified addon preserves runtime/DOM contracts in main thread messaging (10.377117ms)
+✔ minified addon preserves runtime/DOM contracts in worker messaging (4.323671ms)
+✔ minified addon preserves native calls and structured errors in main thread messaging (3.45966ms)
+✔ minified addon preserves native calls and structured errors in worker messaging (3.004905ms)
+✔ minified addon drops stale queued cues before native dispatch in main thread messaging (2.991135ms)
+✔ minified addon drops stale queued cues before native dispatch in worker messaging (3.179378ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 92.062303
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "scope": "Real Cordova host native compilation and Android APK/AAB packaging; no device execution.",
+  "cordovaAndroid": "15.0.0",
+  "compileSdk": 36,
+  "nativeSourceSha256": "a78ad7750eb4f759495f6ea7dffecc5a219a0e1b47cd8afb9f97b5e5120d7d75",
+  "nativeLintErrors": 0,
+  "lintIssueCount": 13,
+  "artifacts": [
+    {
+      "path": "app/platforms/android/app/build/outputs/apk/debug/app-debug.apk",
+      "sha256": "90e0eb9b1f6c727f27d2f0521ef9a717623f8c7203cb8703981cf15fa68e221a",
+      "bytes": 3529307
+    },
+    {
+      "path": "app/platforms/android/app/build/outputs/bundle/debug/app-debug.aab",
+      "sha256": "56ee92d6895e97db55f87bfb5809d5d5b1f873afbbf8637dacf0e707b095cfc4",
+      "bytes": 3095116
+    },
+    {
+      "path": "app/platforms/android/app/build/outputs/bundle/release/app-release.aab",
+      "sha256": "7cb9f4e2a3fcd03c40527f64ad23f5f951829a05cf9d16089b1c09bea302f3ae",
+      "bytes": 2646068
+    }
+  ]
+}

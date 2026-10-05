@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "timeMs": 0,
+      "type": "transient",
+      "intensity": 0.25,
+      "sharpness": 0.45
+    },
+    {
+      "timeMs": 95,
+      "type": "transient",
+      "intensity": 0.5,
+      "sharpness": 0.6
+    },
+    {
+      "timeMs": 210,
+      "type": "transient",
+      "intensity": 0.85,
+      "sharpness": 0.75
+    }
+  ]
+}

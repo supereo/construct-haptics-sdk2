@@ -1,0 +1,47 @@
+{
+  "scope": "Swift syntax and privacy plist validation only",
+  "source": {
+    "path": "native/cordova-plugin-supereo-haptics/src/ios/SupereoHaptics.swift",
+    "sha256": "8967af96cf62560e7a4fbadb780c05c6a3dde8e798362ff92ee93f029ebdcffb",
+    "bytes": 27918
+  },
+  "privacyManifest": {
+    "path": "native/cordova-plugin-supereo-haptics/src/ios/SupereoHaptics.bundle/PrivacyInfo.xcprivacy",
+    "sha256": "418018c160ded561d379cee1510cfb6e0806573c7221177a5330d76ea4145990",
+    "bytes": 377
+  },
+  "checks": {
+    "swiftSyntax": {
+      "status": "PASS",
+      "parserPackage": "tree-sitter-language-pack",
+      "parserVersion": "0.13.0",
+      "treeSitterRuntimeVersion": "0.26.0",
+      "language": "swift",
+      "errorNodes": 0,
+      "missingNodes": 0,
+      "issues": []
+    },
+    "privacyPlist": {
+      "status": "PASS",
+      "format": "Apple XML property list",
+      "declaration": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyAccessedAPITypes": []
+      }
+    },
+    "appleSDKTypecheck": {
+      "status": "NOT RUN",
+      "reason": "No Xcode/Apple SDK typechecking is performed by this script."
+    },
+    "nativeCompilation": {
+      "status": "NOT RUN",
+      "reason": "No Swift compiler or Xcode build is performed by this script."
+    },
+    "deviceTests": {
+      "status": "NOT RUN",
+      "reason": "No physical Apple device is exercised by this script."
+    }
+  }
+}
