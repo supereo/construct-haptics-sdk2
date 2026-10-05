@@ -11,27 +11,48 @@ npm ci --ignore-scripts --cache /tmp/supereo-npm-cache
 npm run verify
 ```
 
-The lockfile fixes tooling versions. `npm run verify` regenerates both copies of
-`lib/core.js`, builds packages, validates all three official SDK schemas and
+The lockfile fixes tooling versions. `npm run verify` prepares the shared core,
+builds packages, validates all three official SDK schemas and
 source identities, runs shipping JavaScript tests, then extracts the real
-minified `.c3addon` for Worker/main-thread contract tests. The editor/native
+minified `.c3addon` for Worker/main-thread contract tests. The loader executes
+the shipping editor registration and bundles the registered runtime entry with
+esbuild-wasm 0.28.2 through a restricted file map. It loads only declared DOM
+scripts and does not preload a validator or strip imports. The editor/native
 environment in those tests is a controlled fixture: no actual Construct editor,
 Cordova device, Core Haptics engine or Android vibrator is exercised.
+
+Before packaging, the build takes `lib/core.js`, generates a browser-global copy
+for Construct, and embeds it before the source templates
+`addon/source/runtime-plugin.js` and `addon/source/dom-handler.js`. The generated
+scripts are `addon/c3runtime/plugin.js` and `addon/c3runtime/domSide.js`.
+The same preparation copies the original shared validator to the native bridge's
+`www/core.js` for Cordova's module loader. Edit the shared core or the templates,
+then rebuild; do not edit the generated addon scripts directly.
+
+The addon ships no separate `c3runtime/haptics-core.js` helper and does not import
+one. Its module entry imports the standard registered runtime scripts, and its
+DOM handler includes its own copy of the same core. This addresses the reported
+Construct file-map resolution failure in addon 1.0.0. The official
+[runtime-scripts guide](https://www.construct.net/en/make-games/manuals/addon-sdk/guide/runtime-scripts#adding-a-module-script)
+requires additional imported runtime modules to be registered with
+`AddC3RuntimeScript`, in addition to being listed in `addon.json`. Including a
+file in an archive alone does not perform that registration. The 1.0.1 design
+keeps the validator in scripts that Construct already registers.
 
 ## Outputs
 
 | Artifact | Contents |
 | --- | --- |
-| `Supereo_Haptics-1.0.0.c3addon` | ZIP-based SDK v2 package, minified JavaScript and editor metadata at archive root. |
+| `Supereo_Haptics-1.0.1.c3addon` | ZIP-based SDK v2 package, Construct metadata version `1.0.1.0`, minified JavaScript and editor metadata at archive root. |
 | `cordova-plugin-supereo-haptics-1.0.0.zip` | Versioned local Cordova bridge directory, including Java/Swift source and schema module. |
 | `cordova-plugin-supereo-haptics-1.0.0.tgz` | npm-format Cordova package; not published to a registry. |
-| `supereo-haptics-source-1.0.0.zip` | Addon, bridge, validators, tests, documentation, demo, examples, schemas and locked build tools. |
+| `supereo-haptics-source-1.0.1.zip` | Addon, bridge, shared core and source templates, validators, tests, documentation, demo, examples, schemas and locked build tools. |
 | `SHA256SUMS` | SHA-256 of the four distributable archives. |
 
 ```sh
 cd dist
 sha256sum -c SHA256SUMS
-unzip -t Supereo_Haptics-1.0.0.c3addon
+unzip -t Supereo_Haptics-1.0.1.c3addon
 ```
 
 ZIP timestamps are fixed. Identical source and dependency versions produce
@@ -41,9 +62,14 @@ metadata and temporary development signatures; their byte hashes are not
 promised to match another machine's build. The archive itself is not a hardware
 test, and schema validity is not a claim of editor installation.
 
+Addon/source release 1.0.1 updates the Construct packaging only. The native
+bridge stays at version 1.0.0, so its archive names and installation identity
+retain that version. An existing native bridge 1.0.0 installation does not need
+to be reinstalled for this addon update.
+
 `npm run build` is the packaging-only command. `npm run check` validates the
 manifest, ACE/language schemas and consistency. If `lib/core.js` changes, rebuild
-before running check so the generated copies are current. Public property names
+before running check so the embedded code and native copy are current. Public property names
 are preserved during minification. The real Construct **Simple** export
 minifier remains a separate manual editor check.
 

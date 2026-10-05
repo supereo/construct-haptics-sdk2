@@ -333,8 +333,11 @@ test("the DOM play watchdog rejects a hung bridge and requests native cancellati
 test("the initialization watchdog settles readiness without claiming hardware after a hung capability query", async t => {
   const clock = controlledTimers();
   const native = createNative();
+  let started;
+  const instanceCreated = new Promise(resolve => { started = resolve; });
   native.api.getCapabilities = () => new Promise(() => {});
-  const initialization = createConstructFixture({ native: native.api, properties: nativeProperties, setTimeout: clock.setTimeout, clearTimeout: clock.clearTimeout });
+  const initialization = createConstructFixture({ native: native.api, properties: nativeProperties, setTimeout: clock.setTimeout, clearTimeout: clock.clearTimeout, onInstanceCreated: started });
+  await instanceCreated;
   await new Promise(resolve => setImmediate(resolve));
   assert.equal([...clock.pending.values()][0].milliseconds, 250);
   clock.expire(250);
@@ -470,11 +473,14 @@ test("release during a delayed initial capability query prevents subsequent nati
   const native = createNative();
   let resolveCapabilities;
   let earlyInstance;
+  let started;
+  const instanceCreated = new Promise(resolve => { started = resolve; });
   native.api.getCapabilities = () => new Promise(resolve => { resolveCapabilities = resolve; });
   const initialization = createConstructFixture({
     native: native.api, properties: nativeProperties,
-    onInstanceCreated({ instance }) { earlyInstance = instance; }
+    onInstanceCreated({ instance }) { earlyInstance = instance; started(); }
   });
+  await instanceCreated;
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(typeof resolveCapabilities, "function");
   earlyInstance._release();
@@ -552,12 +558,15 @@ test("cue freshness is checked after delayed initial capabilities and settings",
   let now = 0;
   let resolveCapabilities;
   let queued;
+  let started;
+  const instanceCreated = new Promise(resolve => { started = resolve; });
   const native = createNative();
   native.api.getCapabilities = () => new Promise(resolve => { resolveCapabilities = resolve; });
   const initializing = createConstructFixture({
     native: native.api, properties: nativeProperties, performance: { now: () => now },
-    onInstanceCreated({ instance }) { queued = instance._postToDOMAsync("haptics-play", request("waiting-for-init")); }
+    onInstanceCreated({ instance }) { queued = instance._postToDOMAsync("haptics-play", request("waiting-for-init")); started(); }
   });
+  await instanceCreated;
   await new Promise(resolve => setImmediate(resolve));
   now = 1001;
   resolveCapabilities(native.capabilities);

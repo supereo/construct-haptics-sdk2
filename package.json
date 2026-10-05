@@ -1,6 +1,6 @@
 {
   "name": "supereo-haptics",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Construct 3 SDK v2 addon and native Cordova haptics bridge",
   "license": "MIT",
@@ -16,6 +16,7 @@
     "ajv": "8.17.1",
     "ajv-formats": "3.0.1",
     "fflate": "0.8.2",
+    "esbuild-wasm": "0.28.2",
     "playwright": "1.62.1",
     "terser": "5.44.1"
   }

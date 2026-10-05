@@ -1,15 +1,23 @@
-# Installing Supereo Haptics 1.0.0
+# Installing Supereo Haptics 1.0.1
 
 Install **both** parts for a mobile build:
 
-1. `dist/Supereo_Haptics-1.0.0.c3addon` adds the Construct event-sheet controls.
+1. `dist/Supereo_Haptics-1.0.1.c3addon` adds the Construct event-sheet controls (Construct metadata version `1.0.1.0`).
 2. `dist/cordova-plugin-supereo-haptics-1.0.0.zip` or the source directory `native/cordova-plugin-supereo-haptics/` supplies the Java/Swift implementations to Cordova.
 
 The `.c3addon` alone cannot add native code to an Android or iOS app. The bridge package is versioned locally and has not been published to npm. **Construct Build Service compatibility is UNVERIFIED**; use the external Cordova route below until this exact native package/version has been reviewed and an actual Construct export has passed.
 
+## Updating from addon 1.0.0
+
+Install `Supereo_Haptics-1.0.1.c3addon` through Addon Manager, confirm that Construct shows version `1.0.1.0`, and reload Construct before reopening the project or previewing it. This update addresses the reported build loader error for `c3runtime/haptics-core.js` by embedding the shared pattern code in the addon's registered runtime plugin and DOM scripts. No additional helper module needs to be resolved by Construct.
+
+The native Cordova bridge remains **1.0.0**. If `cordova-plugin-supereo-haptics 1.0.0` is already installed in your mobile build project, this addon-only update does not require reinstalling it. Re-export your Construct project and rebuild the app to include the corrected addon scripts. A fresh mobile build project still needs the separate bridge installation below.
+
+The update has source/package and loader-contract checks; an actual Construct editor retest of 1.0.1 remains **NOT RUN** unless separately recorded in [TEST-REPORT.md](TEST-REPORT.md).
+
 ## Construct editor
 
-The target is Construct 3 r495.2 stable. In Construct, open the Addon Manager, choose installation from a file, and select `Supereo_Haptics-1.0.0.c3addon`. Restart/reload as prompted. Add the single global **Supereo Haptics** object to the project. Its stable addon ID is `Supereo_Haptics`.
+The target is Construct 3 r495.2 stable. In Construct, open the Addon Manager, choose installation from a file, and select `Supereo_Haptics-1.0.1.c3addon`. Restart/reload as prompted. Add the single global **Supereo Haptics** object to the project. Its stable addon ID is `Supereo_Haptics`.
 
 Use **Play feedback** for ordinary gameplay: Selection tick, Light impact, Medium impact, Strong impact, Soft impact, Crisp impact, Success sequence, Warning sequence or Error sequence. These request native semantics where available; “sequence” describes the intended cue, not a promise about a device's exact pulse count or timing.
 

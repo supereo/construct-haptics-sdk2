@@ -1,6 +1,6 @@
 # Native route and API research
 
-Research date: 5 October 2026. The requested target is Construct 3 r495.2, Addon SDK v2, Worker Auto or Off, Simple minification. An editor session and a signed mobile export were not available for this work. Source-level compatibility checks are not a substitute for those checks.
+Initial research date: 5 October 2026, with a same-day follow-up for addon release 1.0.1. The requested target is Construct 3 r495.2, Addon SDK v2, Worker Auto or Off, Simple minification. The original development checks had no Construct editor session or signed mobile export. The user subsequently reported an actual Construct build loader failure with addon 1.0.0; the agent has not retested the corrected addon 1.0.1 in the editor. Source-level compatibility checks are not a substitute for those checks.
 
 ## Construct and native dependency inclusion
 
@@ -16,6 +16,16 @@ The same route works when the runtime is in a worker and when it runs on the mai
 The official [Greenworks SDK v2 plugin](https://github.com/Scirra/Construct-Plugin-Greenworks/blob/04f8d7628481fa22b72adb96ea0536a93e15b698/construct-plugin/c3runtime/domSide.js#L16) demonstrates the DOM interface's `GetExportType()`, but its `nwjs` example does not establish a preview flag. This addon therefore uses explicit simulation settings rather than an undocumented preview-detection guess.
 
 A `.c3addon` registers a Construct extension; it does not compile native Java or Swift into a mobile app. The separate Cordova plugin declares its JavaScript namespace, native classes, native sources, frameworks, and Android permission in `plugin.xml`. Installing that package in the exported Cordova project is essential.
+
+### Runtime module registration and the 1.0.1 correction
+
+During the initial 5 October research, direct Construct manual fetches were blocked by the environment's network policy, so official SDK samples were read through Scirra's GitHub repository. During the follow-up, the current official [Runtime scripts guide](https://www.construct.net/en/make-games/manuals/addon-sdk/guide/runtime-scripts#adding-a-module-script) and [IPluginInfo reference](https://www.construct.net/en/make-games/manuals/addon-sdk/reference/iplugininfo) were successfully fetched and read.
+
+The guide explicitly requires an additional imported module to be registered by calling `this._info.AddC3RuntimeScript("c3runtime/mymodule.js")`, added to `addon.json`'s `file-list`, and imported from an existing runtime script. `SetRuntimeModuleMainScript` chooses the module entry; it does not register every arbitrary imported file. The IPluginInfo reference separately documents `AddC3RuntimeScript`, `SetRuntimeModuleMainScript`, and `SetDOMSideScripts`.
+
+Addon 1.0.0 imported a separate `c3runtime/haptics-core.js` file that was packaged but not registered as a runtime script. The user's reported Construct file-map error exposed that gap in the earlier loader fixture. Addon **1.0.1** (Construct metadata **1.0.1.0**) embeds the shared validator in the registered runtime `plugin.js` and DOM `domSide.js` scripts. There is no extra helper module to import or resolve. The build derives both embedded copies from `lib/core.js` and the templates in `addon/source/` before packaging. The native Cordova bridge remains **1.0.0**.
+
+This correction follows the documented loading model. Its package and loader-contract checks do not establish a successful actual Construct editor retest; that check remains **NOT RUN** until recorded separately. The official IPluginInfo reference also identifies the native dependency API as `AddCordovaPluginReference(opts)`; this release does not call it for its unpublished/unapproved native package.
 
 ### Build Service findings
 
@@ -55,7 +65,7 @@ Current official Android framework source and its public API documentation comme
 - [HapticFeedbackConstants.java](https://github.com/aosp-mirror/platform_frameworks_base/blob/android16-release/core/java/android/view/HapticFeedbackConstants.java): supported semantic feedback constants and settings-respecting view feedback.
 - [Public API surface](https://github.com/aosp-mirror/platform_frameworks_base/blob/android16-release/core/api/current.txt): public signatures and API availability.
 
-Direct documentation references for a device/build follow-up are [haptics overview](https://developer.android.com/develop/ui/views/haptics/haptics-apis), [Vibrator](https://developer.android.com/reference/android/os/Vibrator), and [VibrationEffect](https://developer.android.com/reference/android/os/VibrationEffect). Their website could not be fetched in this environment because of the network allowlist; the official framework source above was available.
+Direct documentation references for a device/build follow-up are [haptics overview](https://developer.android.com/develop/ui/views/haptics/haptics-apis), [Vibrator](https://developer.android.com/reference/android/os/Vibrator), and [VibrationEffect](https://developer.android.com/reference/android/os/VibrationEffect). During the initial 5 October research, their website could not be fetched because of the environment's network allowlist; the official framework source above was available. This records the original research limitation, not a current connectivity test.
 
 Runtime guards protect newer calls. Compilation still needs API 36 because the Java source references the public envelope classes. The installed app can run on API 24+, with reduced capabilities. Unsupported primitives are never composed, UNKNOWN predefined effect support is never advertised as confirmed support, and envelopes are selected only after a positive hardware check and limit validation.
 
@@ -71,7 +81,7 @@ The implementation uses public UIKit selection, impact and notification generato
 - [UIImpactFeedbackGenerator](https://developer.apple.com/documentation/uikit/uiimpactfeedbackgenerator).
 - [UINotificationFeedbackGenerator](https://developer.apple.com/documentation/uikit/uinotificationfeedbackgenerator).
 
-Direct Apple documentation fetches were blocked by the network allowlist. This is a research limitation, not evidence of native API failure. Apple SDK typechecking, Xcode compilation and physical iPhone checks remain required before a production claim. The separate [test report](TEST-REPORT.md) records what actually ran.
+During the initial 5 October research, direct Apple documentation fetches were blocked by the network allowlist. This records the original research limitation, not a current connectivity test or evidence of native API failure. Apple SDK typechecking, Xcode compilation and physical iPhone checks remain required before a production claim. The separate [test report](TEST-REPORT.md) records what actually ran.
 
 Core Haptics reports `supportsHaptics` for custom effects. UIKit does not expose an equivalent reliable motor-support or completion probe. Consequently, “confirmed hardware available” may be false on an iOS device where UIKit semantic feedback is still permitted; the capability details label that semantic hardware status `unknown`.
 

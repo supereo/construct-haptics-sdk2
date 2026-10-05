@@ -14,5 +14,5 @@ const html = fs.readFileSync(path.join(root, "demo/index.html"), "utf8")
   .replace('<script defer src="../lib/core.js">', '<script defer src="cordova.js"></script><script defer src="lib/core.js">')
   .replace('<a href="../docs/INSTALLATION.md">Installation &amp; exports ↗</a>', '<span>See the source package installation guide.</span>');
 fs.writeFileSync(path.join(target, "index.html"), html);
-fs.writeFileSync(path.join(target, "supereo-demo-installed"), "Supereo Haptics 1.0.0 generic Cordova demo\n");
+fs.writeFileSync(path.join(target, "supereo-demo-installed"), "Supereo Haptics " + require(path.join(root, "package.json")).version + " generic Cordova demo\n");
 console.log("Assembled generic demo at " + target + ". Install the native bridge and prepare/build the host separately.");

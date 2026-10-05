@@ -13,7 +13,7 @@ const PLUGIN_CLASS = SDK.Plugins.Supereo_Haptics = class SupereoHapticsPlugin ex
         this._info.SetHelpUrl(globalThis.lang(".help-url"));
         this._info.SetIsSingleGlobal(true);
         this._info.SetRuntimeModuleMainScript("c3runtime/main.js");
-        this._info.SetDOMSideScripts(["c3runtime/haptics-core.js", "c3runtime/domSide.js"]);
+        this._info.SetDOMSideScripts(["c3runtime/domSide.js"]);
         // The unpublished native package is installed explicitly into external Cordova exports.
         // A Build Service dependency must only be added after Scirra approves the package/version.
         SDK.Lang.PushContext(".properties");

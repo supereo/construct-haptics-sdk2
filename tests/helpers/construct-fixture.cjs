@@ -3,9 +3,9 @@
 // A JavaScript integration fixture for the public Construct SDK v2 messaging
 // surface demonstrated by Scirra's domMessagingPlugin sample. It runs our real
 // runtime and DOM scripts. This is not a Construct editor or a device test.
-const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
+const { captureAddonRegistration, bundleRegisteredRuntime, readAddonScript } = require("./construct-loader.cjs");
 
 const root = path.resolve(__dirname, "../..");
 
@@ -40,16 +40,17 @@ class ElementFixture {
   get textContent() { return this._textContent; }
 }
 
-function execute(context, relativeFile, sources = {}) {
+function executeDOMScript(context, relativeFile, sources) {
   const filename = path.join(root, relativeFile);
-  // Runtime modules have their own lexical scope. The real module loader has
-  // already supplied dependencies in this fixture, so only static imports are
-  // omitted. The tested module's actual executable code is retained.
-  const source = (sources[relativeFile] === undefined ? fs.readFileSync(filename, "utf8") : sources[relativeFile]).replace(/^\s*import\s+[^;]+;\s*$/gm, "");
-  vm.runInContext(`(function () {\n${source}\n})();`, context, { filename });
+  vm.runInContext(readAddonScript(relativeFile.replace(/^addon\//, ""), sources), context, { filename });
 }
 
 async function createConstructFixture(options = {}) {
+  // Read the shipping editor registration, resolve the registered main entry
+  // through Construct's restricted runtime file map, and let esbuild process
+  // its real imports. No helper library is preloaded into either context.
+  const registration = captureAddonRegistration(options.sources);
+  const bundledRuntime = await bundleRegisteredRuntime(options.sources, registration);
   const messages = [];
   const triggers = [];
   const loads = [];
@@ -101,8 +102,8 @@ async function createConstructFixture(options = {}) {
   });
   window.window = window;
   if (native) window.cordova = domContext.cordova;
-  execute(domContext, "lib/core.js", options.sources);
-  execute(domContext, "addon/c3runtime/domSide.js", options.sources);
+  for (const script of registration.domSideScripts)
+    executeDOMScript(domContext, "addon/" + script, options.sources);
   const runtimeInterface = {
     AddRuntimeMessageHandler(component, name, callback) { handlers.set(name, callback); },
     PostToRuntime(component, name, data) { runtimeDOMMessages.get(name)?.(structuredClone(data)); }
@@ -149,9 +150,7 @@ async function createConstructFixture(options = {}) {
     runtimeContext.document = document;
     runtimeContext.navigator = domContext.navigator;
   }
-  execute(runtimeContext, "lib/core.js", options.sources);
-  for (const file of ["plugin", "type", "conditions", "actions", "expressions", "instance"])
-    execute(runtimeContext, `addon/c3runtime/${file}.js`, options.sources);
+  vm.runInContext(bundledRuntime.code, runtimeContext, { filename: registration.runtimeMainScript + ".bundled.js" });
   const plugin = runtimeContext.C3.Plugins.Supereo_Haptics;
   instance = new plugin.Instance();
   if (options.onInstanceCreated) options.onInstanceCreated({ instance, handler, document, window });
@@ -159,7 +158,7 @@ async function createConstructFixture(options = {}) {
 
   return {
     instance, handler, plugin, messages, triggers, vibrationCalls, window, document,
-    domContext, runtimeContext,
+    domContext, runtimeContext, registration, bundledRuntime,
     async message(name, data) {
       if (!handlers.has(name)) throw new Error(`Unknown DOM message: ${name}`);
       return structuredClone(await handlers.get(name)(structuredClone(data)));

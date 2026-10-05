@@ -1,9 +1,10 @@
 # Supereo Haptics
 
 Construct 3 Addon SDK v2 mobile haptics plugin, addon ID **Supereo_Haptics**.
-Release **1.0.0** (Construct metadata version **1.0.0.0**).
+Addon release **1.0.1** (Construct metadata version **1.0.1.0**).
+The compatible native Cordova bridge remains **1.0.0**.
 
-The packaged addon is `dist/Supereo_Haptics-1.0.0.c3addon`. Native mobile output
+The packaged addon is `dist/Supereo_Haptics-1.0.1.c3addon`. Native mobile output
 also needs the separate `cordova-plugin-supereo-haptics` package. Install both
 using [the installation/export guide](docs/INSTALLATION.md).
 
@@ -19,6 +20,11 @@ bridge compiled debug/release and produced APK/AAB artifacts. Construct r495.2
 editor import/export, iOS compilation and physical devices were unavailable;
 see the [actual test report](docs/TEST-REPORT.md).
 
+Version 1.0.1 fixes the Construct build error for an unregistered
+`c3runtime/haptics-core.js` import. The shared validator is now embedded in the
+registered runtime and DOM scripts. Update the addon through Addon Manager and
+reload Construct; an existing native bridge 1.0.0 installation can be retained.
+
 ## Start here
 
 - [Install and export](docs/INSTALLATION.md): `.c3addon` plus native bridge; Android AAB and iOS workspace route.
@@ -26,7 +32,7 @@ see the [actual test report](docs/TEST-REPORT.md).
 - [Capability/fallback matrix](docs/CAPABILITIES.md): what each platform can really expose.
 - [Generic Construct demo assembly](demo/ASSEMBLY.md): exact event-sheet instructions; no unverified `.c3p`.
 - [QuickChess examples](docs/QUICKCHESS.md): independent gameplay examples, no backend changes.
-- [Build from source](docs/BUILD.md), [research evidence](docs/RESEARCH.md), [native evidence](docs/NATIVE-CHECKS.md).
+- [Build from source](docs/BUILD.md), [release notes](docs/RELEASE-NOTES.md), [research evidence](docs/RESEARCH.md), [native evidence](docs/NATIVE-CHECKS.md).
 
 ## Rebuild the release
 
@@ -35,7 +41,7 @@ npm ci --ignore-scripts --cache /tmp/supereo-npm-cache
 npm run verify
 ```
 
-This validates the official SDK schemas, exercises the shipping JavaScript,
+This validates the official SDK schemas and registered runtime module graph, exercises the shipping JavaScript,
 minifies without renaming public properties, and writes the addon, native ZIP,
 native npm-format TGZ, complete source ZIP and SHA-256 checksums to `dist/`.
 It does not run Xcode, a Construct editor, Build Service or devices.

@@ -9,14 +9,15 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 const { unzipSync, strFromU8 } = require("fflate");
 const { createConstructFixture } = require("./helpers/construct-fixture.cjs");
+const { bundleRegisteredRuntime, runtimeModules } = require("./helpers/construct-loader.cjs");
 const root = path.resolve(__dirname, "..");
 const { version } = require("../package.json");
 const artifactName = `Supereo_Haptics-${version}.c3addon`;
 const artifact = fs.readFileSync(path.join(root, "dist", artifactName));
 const files = unzipSync(artifact);
 const metadata = JSON.parse(strFromU8(files["addon.json"]));
-const sources = { "lib/core.js": strFromU8(files["c3runtime/haptics-core.js"]) };
-for (const [name, bytes] of Object.entries(files)) if (name.startsWith("c3runtime/") && name.endsWith(".js")) sources[`addon/${name}`] = strFromU8(bytes);
+const sources = {};
+for (const [name, bytes] of Object.entries(files)) if (name.endsWith(".js")) sources[`addon/${name}`] = strFromU8(bytes);
 
 test("the generated addon contains exactly its declared files and matches its checksum", () => {
   assert.deepEqual(Object.keys(files).sort(), metadata["file-list"].sort());
@@ -24,12 +25,21 @@ test("the generated addon contains exactly its declared files and matches its ch
   const lines = fs.readFileSync(path.join(root, "dist/SHA256SUMS"), "utf8").trim().split("\n");
   assert.ok(lines.includes(`${checksum}  ${artifactName}`));
   assert.equal(metadata["sdk-version"], 2);
+  assert.equal(metadata.version, version + ".0");
   assert.equal(metadata["supports-worker-mode"], true);
-  assert.match(sources["addon/c3runtime/main.js"], /haptics-core\.js/);
+  assert.ok(!sources["addon/c3runtime/main.js"].includes("haptics-core.js"), "the runtime entry does not import an unmapped helper");
+  assert.ok(!metadata["file-list"].includes("c3runtime/haptics-core.js"), "no separate helper file is shipped");
   for (const file of ["instance", "actions", "conditions", "expressions", "domSide"]) {
     const original = fs.readFileSync(path.join(root, `addon/c3runtime/${file}.js`), "utf8");
     assert.ok(sources[`addon/c3runtime/${file}.js`].length < original.length, `${file} is packaged as minified JavaScript`);
   }
+});
+
+test("the actual minified archive entry bundles through Construct's standard runtime file map", async () => {
+  const result = await bundleRegisteredRuntime(sources);
+  assert.equal(result.registration.runtimeMainScript, "c3runtime/main.js");
+  assert.deepEqual(result.registration.domSideScripts, ["c3runtime/domSide.js"]);
+  assert.deepEqual(result.resolvedFiles.sort(), ["main.js", ...runtimeModules].map(name => "scripts/plugins/Supereo_Haptics/c3runtime/" + name).sort());
 });
 
 for (const worker of [false, true]) test(`minified addon preserves runtime/DOM contracts in ${worker ? "worker" : "main thread"} messaging`, async t => {

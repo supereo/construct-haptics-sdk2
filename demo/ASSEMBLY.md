@@ -4,7 +4,7 @@ These are exact event-sheet assembly instructions for a new demonstration in Con
 
 ## Create the layout
 
-1. Install `dist/Supereo_Haptics-1.0.0.c3addon` through Addon Manager and create a blank project named `SupereoHapticsDemo`.
+1. Install `dist/Supereo_Haptics-1.0.1.c3addon` through Addon Manager, confirm Construct metadata version `1.0.1.0`, and reload Construct. Create a blank project named `SupereoHapticsDemo`. If updating an existing demo, reopen it after reload; native bridge 1.0.0 does not need reinstalling for this addon-only update.
 2. Set the project's Worker setting to **Auto**. Keep export minification **Simple** when exporting. Create layout `Demo` and event sheet `DemoEvents`.
 3. Add the single global **Supereo Haptics** object and name the project object `SupereoHaptics`. In its properties, set **Enabled** Yes, **Overall strength** `1`, **Native required** No, **Preview simulation** Yes, **Overlap policy** Replace active pattern, **Duplicate protection (ms)** `40`, and **Bridge wait limit (ms)** `2500`. These settings deliberately enable visible browser simulation when the native bridge is absent.
 4. Add the standard **AJAX** object. Add four project files from `examples/`: `gentle-selection.json`, `rising-success.json`, `double-warning.json`, `soft-pulse.json`.

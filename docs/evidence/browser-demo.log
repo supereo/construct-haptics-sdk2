@@ -1,5 +1,5 @@
 
-> supereo-haptics@1.0.0 test:demo
+> supereo-haptics@1.0.1 test:demo
 > node tools/demo-check.cjs
 
 Browser demo PASS: 9 presets, 4 patterns, strength/enable, cancel, overlap, invalid JSON, responsive layout; simulation only.
