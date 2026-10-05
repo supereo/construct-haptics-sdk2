@@ -121,11 +121,26 @@ Follow [INSTALLATION.md](INSTALLATION.md) for the full QuickChess source-update,
 export and Cordova preparation sequence.
 
 This is a read-only static audit, not JavaScript execution, Xcode compilation,
-device playback or proof that a splash-screen hang has only one cause. The
-user's Mac source/export directories are absent from this cloud workspace, so
-checking the actual project-bundled addon and auditing the actual QuickChess
-export remain NOT RUN until those files or local output are provided. See
-[TEST-REPORT.md](TEST-REPORT.md) for the auditor's own test evidence.
+device playback or proof that a splash-screen hang has only one cause. At the
+1.0.2 release check, the user's Mac source/export directories were absent and
+the actual export audit had not run.
+
+**Follow-up — 5 October 2026 (UTC):** an uploaded latest Build Service Xcode
+export has now been inspected. Its 15 Simple-minified JavaScript files parse,
+with zero local static imports and main-thread configuration. Both Supereo
+native bridges were missing; supported Cordova iOS 8.1.1 installation added
+Haptics 1.0.0 and the matching separate GameAnalytics 1.0.0-rc.1 bridge to a
+project copy, preserving all 112 protected gameplay web assets/settings.
+Source-project bundled-addon updating, Xcode compilation and device/backend
+checks remain NOT RUN. This follow-up changes documentation and evidence only;
+addon and native package versions and code remain unchanged. See
+[TEST-REPORT.md](TEST-REPORT.md) and the
+[sanitized summary](evidence/latest-export-repair-summary.json).
+
+Future standalone Xcode exports can use the separately supplied repair kit;
+follow its artifact README for local postprocessing into a fresh output copy.
+It is handed over separately, since it includes the game's matching analytics
+package. It is not part of this SDK source release or a Build Service approval.
 
 ## Visual demo check
 

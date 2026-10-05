@@ -6,8 +6,11 @@ version `1.0.2.0`, unchanged native bridge version `1.0.0`. Requested editor: Co
 **r495.2 stable**, Worker Auto and Off, export minification Simple.
 
 The release is packaged and schema-checked. JavaScript and available native
-build checks passed. **It is not device-validated, and editor installation,
-actual Construct exports, Apple compilation and Build Service are not verified.**
+build checks passed. A later supplied Build Service iOS export was inspected
+statically and a separate project copy received supported native installation.
+**It is not device-validated. Agent-side editor installation/export execution,
+Apple compilation and correct future Build Service native inclusion remain
+unverified.**
 No simulated test is classified as a native-device test.
 
 ## Reported import failure, bundled addon and correction
@@ -24,8 +27,9 @@ metadata `1.0.1.0`, SHA-256
 `0d9b704879e14fb2d8f384c8a8aee830dc4bada589e712cffa5849d42df216e9`,
 no helper file and no `haptics-core.js` import. It embeds the core in both runtime
 plugin and DOM handler. The error therefore identifies code different from
-that archive, but the user's exact current project/export cannot be inspected
-here. An older project-bundled addon is a plausible explanation. Official
+that archive. A later supplied latest export was inspected and does not reproduce
+the missing static-module defect. The original source project is unavailable;
+the user reports project-bundled Haptics 1.0.1 while the editor has 1.0.2. Official
 Construct documentation requires **Tools → View used addons → Update to editor
 version** for bundled addons after updating the installed addon.
 
@@ -37,11 +41,49 @@ registration, bundle its registered graph through esbuild-wasm 0.28.2, and load
 only declared DOM scripts. They do not preload a validator or strip imports.
 **Actual Construct editor export/retesting of 1.0.2 remains NOT RUN.**
 
-The user's Mac source `/Users/ben/Downloads/QuickChess/` and export
-`/Users/ben/Downloads/QuickChess Construct 3/` are absent from this cloud
-workspace. No gameplay, analytics, backend or purchase event sheets were edited.
-The confirmed missing import can prevent startup; neither this diagnosis nor
-host testing proves it is the only cause of the device's splash-screen symptom.
+The original Mac source folder remains unavailable in this cloud workspace.
+An uploaded copy of the latest Xcode export is now available and was inspected.
+The user identifies that archive as the latest build despite an older-looking
+filename and reports working gameplay. No gameplay, analytics, backend or
+purchase event sheets were edited. The latest diagnosis is missing native
+bridges, distinct from the earlier missing import; static tests do not establish
+physical haptics or analytics delivery.
+
+## Actual supplied latest export inspection
+
+The actual supplied Build Service Xcode export was inspected separately from the
+synthetic export fixtures. Its runtime is Simple-minified and configured for
+main-thread operation (`useWorker: false`). The JavaScript parses and the local
+static-import audit passes across **15 JavaScript files**, with zero local
+import references. This does not
+execute the bundled game or test Worker Auto.
+
+Both Supereo Haptics and the game's separate SupereoGameAnalytics native bridges
+are missing from the original export's registration. Taptic Engine 2.2.0 is
+present, but exposes a different service and cannot supply either Supereo
+interface. The inspected output therefore does not establish native inclusion
+through Build Service. A passing build or working gameplay can coexist with
+these native omissions.
+
+Native installation was performed through Cordova iOS 8.1.1's supported platform
+API into a separate copy of the supplied standalone Xcode project. The original
+export is preserved. Both matching bridges were included: Haptics **1.0.0** and
+SupereoGameAnalytics **1.0.0-rc.1**. The repaired copy passes static import
+inspection across **18 JavaScript files**, with both Supereo JavaScript/native
+registrations and native source/resource membership checked.
+
+All **112 protected gameplay web assets/settings** are byte-identical to the
+original. Six existing native configuration/project/registry files changed;
+there were no removals. The GameAnalytics **5.1.0** official SDK archive's
+checksum matched its official `Package.swift`; 32 vendored files and 31 installed
+framework files were verified against that archive. These checks do not
+initialize the analytics SDK or send an event.
+
+The selected [sanitized repair summary](evidence/latest-export-repair-summary.json)
+records those results. Project-file checks and byte comparisons are distinct from
+Xcode compilation, device startup/output and analytics dashboard delivery. Only
+sanitized observations belong in this public SDK report; private game files,
+configuration values and analytics keys are not included.
 
 ## Executed checks
 
@@ -55,6 +97,13 @@ host testing proves it is the only cause of the device's splash-screen symptom.
 | Complete JavaScript message chain | PASS, 2 tests | Runtime → DOM → shipping Cordova JS → strict mocked native transport in both modes, checking exact native request fields and packaged core module. |
 | Cordova present, Taptic Engine present, Supereo bridge absent | PASS, 4 source tests | Both runtime modes, `deviceready` and bounded timeout, absent/empty plugin namespace: load promise settles, structured missing-bridge error, no unhandled rejection, all presets/patterns reject gracefully, settings/Stop remain usable. No foreign Taptic Engine or browser vibration calls. |
 | Read-only exported-files audit | PASS, 8 tests | Filesystem fixtures shaped as main-thread/worker exports, shipping module graph, original missing-file reproduction, imports/re-exports, syntax errors, URL paths, separate native registration and CLI exit code. **These fixtures are not actual Construct exports.** |
+| Actual supplied latest Build Service iOS export: JavaScript/static imports | PASS | **15 actual JavaScript files** parsed; Simple-minified main-thread output, `useWorker: false`; zero local import references and no missing local static imports. No game execution or Worker Auto check. |
+| Actual supplied latest export: native bridge diagnosis | Confirmed missing | Original output lacks both Supereo Haptics and SupereoGameAnalytics registrations; Taptic Engine 2.2.0 remains present and provides a different interface. This is actual export inspection, not a simulated fixture. |
+| Actual supplied-export copy: matching native bridges installed | PASS | Supported Cordova iOS 8.1.1 platform API installed Haptics **1.0.0** and matching SupereoGameAnalytics **1.0.0-rc.1**. Native/JS services, exact source/resources, compile/resource/framework phase membership and registration inspected. **No Xcode compile or device execution.** [Sanitized summary](evidence/latest-export-repair-summary.json). |
+| Actual repaired-copy static imports and game-file preservation | PASS | **18 actual JavaScript files**, zero local import references, registrations present; original export unmodified; **112 protected web assets/settings unchanged byte for byte**, six integration metadata files changed and zero removals. |
+| Matching GameAnalytics native SDK artifact inclusion | PASS | Official SDK **5.1.0** archive checksum matched official `Package.swift`; 32 vendored files and 31 installed framework files checked against the archive. Linking/configuration inspection only; no native initialization, live events or dashboard result. |
+| Follow-up packaged-addon/export-auditor regression subset | PASS, **18 tests** | Re-ran `tests/compiled-addon.cjs` and `tests/export-audit.test.cjs` during the supplied-export repair. Minified Worker/main-thread fixtures, graceful missing-bridge behavior and removed-helper detection passed. A repeat of a subset, not 18 additional unique tests or an editor/device test. |
+| Repaired-export Cordova JavaScript loader/runtime host fixtures | PASS, **8 cases** | Loader/module registration and Worker/main-thread contract fixtures passed with mocked native calls. **No native haptic or analytics SDK initialization, device execution or live delivery.** |
 | **Source suite total** | **153 passed; 0 failed/skipped** | [Captured output](evidence/javascript-tests.log). Fixtures do not run the Construct editor or physical hardware. |
 | Actual minified `.c3addon` | **10 passed; 0 failed/skipped** | Extracted real archive, registered helper/file graph, preserved complete Cordova dependency payload, Worker/main-thread messaging, absent-bridge startup, native contracts and stale requests. Public property names preserved. Same log above. |
 | Event-sheet interfaces/properties and native protocol | PASS | Compared with published 1.0.1: ACE declarations, action/condition/expression scripts, instance behavior, initial properties, DOM template and native package sources unchanged. [Comparison](evidence/release-contract-result.json). |
@@ -83,17 +132,18 @@ checked separately for this release; Xcode compilation was not available.
 | Requested check | Status | Reason / next step |
 | --- | --- | --- |
 | Install/open corrected addon 1.0.2 in Construct r495.2 | **NOT RUN** | Actual Chromium navigation failed before the editor loaded: proxy CONNECT 403 / `ERR_TUNNEL_CONNECTION_FAILED`. [Probe](evidence/editor-access-result.json). Install 1.0.2, update the project-bundled copy, save/reload and follow demo/ASSEMBLY.md. |
-| Real Worker Auto and Worker Off preview/export | **NOT RUN** | Host fixtures exercise the documented messaging design, but the actual editor/runtime environment must still be tested. |
-| Construct Simple export minifier | **NOT RUN** | Actual packaged scripts are minified and tested with Terser without property mangling; Construct's own exporter was unavailable. |
-| Construct-generated Android AAB / iOS project end to end | **NOT RUN** | External standard Cordova hosts were checked. No Construct-generated project was supplied or exported here. |
-| QuickChess source/export and all static imports in the actual export | **NOT RUN** | The supplied Mac paths are unavailable in this cloud workspace. Run `npm run audit:export -- '/Users/ben/Downloads/QuickChess Construct 3/'` and repeat for the fresh export. No simulated export is counted as the requested actual export. |
+| Real Worker Auto and Worker Off preview/export execution | **NOT RUN** | The supplied export has main-thread `useWorker: false` configuration; host fixtures exercise both messaging modes. Actual editor/runtime execution in both settings remains untested. |
+| Agent-side Construct Simple export minifier execution | **NOT RUN** | The supplied actual export is Simple-minified and parses. Packaged scripts are also minified/tested with Terser without property mangling; no agent-side Construct exporter execution occurred. |
+| Construct-generated Android AAB / iOS app end to end | **NOT RUN** | A supplied Build Service iOS project was inspected and a separate copy repaired. No agent-side Construct export, Xcode compilation, signed app or physical-device execution occurred. |
+| Actual QuickChess source bundled-addon update and re-export | **NOT RUN** | The original Construct source/editor remains unavailable. The user reports bundled Haptics 1.0.1 versus editor 1.0.2; use Tools → View used addons → Update to editor version, save/reload and export again. |
 | Construct export of the pinned HTTPS Cordova version spec | **NOT RUN** | Documented `AddCordovaPluginReference` declares a version spec and config.xml inclusion; URL restoration passed in Cordova. Actual Construct URL-spec pass-through still needs an exported config.xml. |
 | Xcode/Apple SDK Swift typechecking and compilation | **NOT RUN** | Linux host lacks macOS, Xcode, Apple SDK and `xcodebuild`. Project-file and syntax checks do not replace compilation. |
+| Supplied/repaired game: native GameAnalytics startup and dashboard delivery | **NOT RUN** | Missing registration was diagnosed and native integration can be inspected statically; no iPhone execution, live analytics delivery or dashboard validation occurred. |
 | Supported physical iPhone / UIKit/Core Haptics | **NOT RUN** | No iPhone attached. Simulator output would not establish haptic behavior either. |
 | Advanced physical Android device | **NOT RUN** | No physical device/emulator attached. Verify primitives, amplitude and API 36 envelope hardware queries on appropriate devices. |
 | Older/basic Android and unsupported hardware | **NOT RUN** | No such device attached. Validate settings, waveform/on-off fallbacks and truthful unsupported output. |
 | Device interruptions, background/resume, overlap/rapid repeats/cancel, strength and disable | **NOT RUN** | JS/algorithm fixtures cover corresponding control logic; actual OS/hardware lifecycle behavior remains untested. |
-| Construct Build Service | **NOT APPROVED / UNVERIFIED / NOT RUN** | The package is hosted on GitHub; this exact dependency has not been submitted/approved. Allowlisting plus API 36/Swift compatibility and an actual export remain required. Automatic metadata inclusion does not bypass approval. |
+| Construct Build Service custom-native inclusion | **NOT APPROVED / UNVERIFIED** | The actual supplied service export lacked both Supereo bridges. This Haptics dependency has not been submitted/approved; matching GameAnalytics inclusion is also unestablished. Service allowlisting and export/native validation remain required. Automatic metadata inclusion does not bypass approval. |
 | Official documentation research | **PARTIAL** | Current Construct Runtime scripts and IPluginInfo pages were successfully read during the fix. Initial Android/Apple website fetches were blocked; official Apache/AOSP sources and identified Apple-header mirrors were read. See RESEARCH.md for exact sources and boundaries. |
 
 These limitations prevent a production-ready or real-device-verified claim.

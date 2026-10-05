@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "scope": "Static inspection and supported native bridge installation into a separate copy of the actual supplied standalone iOS Xcode export. No Xcode compilation, physical device execution, native analytics initialization or dashboard delivery.",
+  "addonRelease": "1.0.2",
+  "sourceProjectStatus": "User reports bundled Haptics 1.0.1 and editor Haptics 1.0.2; original source project not inspected here.",
+  "originalExport": {
+    "javascriptFiles": 15,
+    "localStaticImports": 0,
+    "missingLocalStaticImports": 0,
+    "simpleMinificationObserved": true,
+    "useWorker": false,
+    "supereoHapticsRegistrationPresent": false,
+    "supereoGameAnalyticsRegistrationPresent": false,
+    "tapticEngineVersion": "2.2.0",
+    "preservedUnmodified": true,
+    "originalFileCount": 262
+  },
+  "repairedCopy": {
+    "cordovaIOS": "8.1.1",
+    "installationRoute": "Supported Cordova iOS PlatformApi.addPlugin into a separate existing-platform copy.",
+    "javascriptFiles": 18,
+    "localStaticImports": 0,
+    "missingLocalStaticImports": 0,
+    "protectedWebAssetCount": 112,
+    "protectedWebAssetsByteIdentical": true,
+    "changedExistingIntegrationFileCount": 6,
+    "removedFileCount": 0,
+    "gameplayAnalyticsSheetsAndSettings": "Unchanged byte for byte.",
+    "installedBridges": [
+      {
+        "package": "cordova-plugin-supereo-haptics",
+        "version": "1.0.0",
+        "javascriptNamespace": "cordova.plugins.SupereoHaptics",
+        "nativeService": "SupereoHaptics",
+        "sourceResourcesAndRegistrationChecked": true
+      },
+      {
+        "package": "cordova-plugin-supereo-gameanalytics",
+        "version": "1.0.0-rc.1",
+        "javascriptNamespace": "cordova.plugins.SupereoGameAnalytics",
+        "nativeService": "SupereoGameAnalytics",
+        "sourceResourcesAndRegistrationChecked": true
+      }
+    ],
+    "gameAnalyticsSDK": {
+      "version": "5.1.0",
+      "officialArchiveChecksumVerifiedAgainstOfficialPackageSwift": true,
+      "vendoredFilesVerified": 32,
+      "installedFrameworkFilesVerifiedAgainstOfficialArchive": 31
+    }
+  },
+  "hostChecks": {
+    "packagedAddonAndExportAuditorRegressionSubset": {
+      "tests": 18,
+      "failures": 0,
+      "skipped": 0
+    },
+    "cordovaLoaderAndWorkerMainRuntimeFixtures": {
+      "cases": 8,
+      "result": "PASS",
+      "nativeCalls": "Mocked; no native SDK initialization or analytics delivery."
+    }
+  },
+  "notRun": {
+    "xcodeCompilation": "Linux host has no Xcode or Apple SDK.",
+    "physicalIPhoneAndHaptics": "No physical iPhone attached.",
+    "nativeAnalyticsInitializationLiveEventsAndDashboard": "No physical app execution or dashboard validation.",
+    "sourceProjectBundledAddonUpdateAndReexport": "Original Construct source/editor unavailable.",
+    "futureBuildServiceNativeInclusion": "No custom package approval or corrected future service export verified."
+  },
+  "privacy": "Sanitized metadata only. No private game files, file inventories, configuration values, analytics keys, source scripts or player data copied into this evidence."
+}

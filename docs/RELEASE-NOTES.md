@@ -33,8 +33,8 @@ Version **1.0.1** already addressed the original unregistered-helper defect by
 embedding its runtime core; the published 1.0.1 archive has no helper import.
 Version 1.0.2 chooses explicit runtime-module registration instead. Seeing an
 old unresolved import after an attempted 1.0.1 update suggests a different
-bundled/cached/exported copy, but the actual QuickChess files are unavailable
-here, so that explanation is not proven.
+bundled/cached/exported copy. At the release check those files were unavailable,
+so that explanation was not proven; see the later inspection note below.
 
 Updating the editor addon does not update an old export. Install
 `Supereo_Haptics-1.0.2.c3addon`, confirm Construct metadata version `1.0.2.0`,
@@ -61,13 +61,31 @@ a different plugin and does not register `cordova.plugins.SupereoHaptics` or the
 native `SupereoHaptics` service. The verified iOS project-generation route uses
 Cordova iOS 8.1.1; Xcode compilation and device output are separate checks.
 
-The user's Mac source and export folders are absent from this cloud workspace,
-so the actual bundled-addon check, export audit and iOS startup/device checks
-remain **NOT RUN**. Static audit results do
-not establish that a splash-screen hang has only one cause. No QuickChess
+At the release check the user's Mac source and export folders were absent, so
+the actual export audit had not run. The original source bundled-addon check and
+iOS startup/device checks remain **NOT RUN**. Static audit results do not
+establish that a splash-screen hang has only one cause. No QuickChess
 gameplay, analytics, backend or purchase changes are included. See
 [INSTALLATION.md](INSTALLATION.md) and [TEST-REPORT.md](TEST-REPORT.md) for the
 rebuild workflow, actual validation and remaining limits.
+
+### Export-inspection follow-up — 5 October 2026 (UTC)
+
+The later supplied latest Build Service Xcode export passes static inspection
+of 15 Simple-minified JavaScript files with zero local imports. Both Supereo
+native bridges were missing, despite the presence of Taptic Engine 2.2.0.
+Supported Cordova iOS 8.1.1 installation added Haptics 1.0.0 and matching
+SupereoGameAnalytics 1.0.0-rc.1 to a separate project copy; 112 protected gameplay
+web assets/settings are unchanged. Native registration, source/resource copies
+and framework inclusion were checked. Xcode compilation, device output and
+analytics initialization/dashboard delivery remain NOT RUN. The prepared
+workspace and separate local repair kit are handover artifacts, not additions
+to this SDK package. Follow the kit's README for future copied-export repairs.
+Build Service approval and future automatic inclusion remain unestablished.
+
+Addon 1.0.2 and native bridge 1.0.0 are unchanged. This follow-up updates only
+documentation and sanitized evidence, with no gameplay or analytics event-sheet
+changes. See [TEST-REPORT.md](TEST-REPORT.md) for the exact checks and limits.
 
 ## Addon 1.0.1 / native bridge 1.0.0
 

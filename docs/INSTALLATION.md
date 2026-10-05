@@ -10,7 +10,7 @@ https://raw.githubusercontent.com/supereo/construct-haptics-sdk2/d15c7d1b0ec1300
 
 The native ZIP/source directory is also supplied for inspection and an offline/local fallback. The `.c3addon` itself does not contain compiled Java/Swift; Cordova must restore and compile the referenced bridge. No npm publication is required for the pinned HTTPS tarball route. The native package is downloaded at build time, not while a player uses the addon.
 
-**Construct Build Service: NOT APPROVED / compatibility UNVERIFIED.** A dependency declaration does not grant the service permission to compile a new native plugin. Use the external Cordova route below. Actual Construct r495.2 export of this reference and Build Service pass-through remain **NOT RUN** here.
+**Construct Build Service: NOT APPROVED / compatibility UNVERIFIED.** A dependency declaration does not grant the service permission to compile a new native plugin. The latest supplied Build Service Xcode export was inspected and contains neither the Supereo Haptics bridge nor the game's separate SupereoGameAnalytics bridge. Use the external Cordova route or a supported postprocessing step that includes each matching native package. A successful Build Service export alone is not evidence that these custom native dependencies were included.
 
 ## Updating from an earlier addon
 
@@ -20,7 +20,7 @@ The native Cordova bridge remains **1.0.0**. If `cordova-plugin-supereo-haptics 
 
 The update has source/package and loader-contract checks; an actual Construct editor retest of 1.0.2 remains **NOT RUN** unless separately recorded in [TEST-REPORT.md](TEST-REPORT.md).
 
-The published 1.0.1 archive was checked and has no `haptics-core.js` runtime import. Seeing that old import after installing 1.0.1 therefore suggests another project-bundled/cached/exported copy; the actual QuickChess folders are absent here, so that explanation remains unproven. Use the project-bundled update steps below rather than assuming an editor-wide install updated the saved project.
+The published 1.0.1 archive was checked and has no `haptics-core.js` runtime import. The latest supplied export also passes the local static-import audit and the user reports working gameplay. Its confirmed problem is missing native bridge registration, distinct from the earlier missing-module error. The user reports project-bundled Haptics 1.0.1 while the editor has 1.0.2; use the separate bundled-addon update below before the next export.
 
 ## Construct editor
 
@@ -32,9 +32,26 @@ For browser previews, explicitly enable simulation and allow operation without a
 
 Keep the project Worker setting at **Auto** and export minification at **Simple**. The runtime communicates with a DOM handler, so the same design supports Worker Off. Actual editor preview/export verification for r495.2 is recorded separately in [TEST-REPORT.md](TEST-REPORT.md).
 
-## QuickChess: replace the stale exported addon
+## Latest supplied export and prepared repair
 
-The user reports the missing `haptics-core.js` import and an iOS splash-screen hang, including after an attempted addon 1.0.1 update. The supplied Construct source folder is `/Users/ben/Downloads/QuickChess/`; its bundled addon is `addons/plugin/Supereo_Haptics.c3addon`, originally reported at metadata version `1.0.0.0`. Its current files have not been inspected here. The supplied Xcode export is `/Users/ben/Downloads/QuickChess Construct 3/`. An already generated export will not acquire corrected scripts merely because the editor addon was updated. Rebuild from the original Construct source:
+The latest uploaded Xcode export uses Simple-minified, main-thread runtime output (`useWorker: false`). Its JavaScript parses and has no missing local static imports; the minified graph contains zero local import references for the auditor to resolve. Both `SupereoHaptics` and `SupereoGameAnalytics` native registrations are absent. Taptic Engine 2.2.0 is present, but it provides a different interface and cannot satisfy either Supereo dependency. This is an inspection of actual supplied files, not a simulated export or device test.
+
+The prepared repaired Xcode ZIP supplied with this task is a complete project copy. For that artifact:
+
+1. Extract it into a new folder, keeping the original export separately.
+2. Open the extracted **`App.xcworkspace`** in Xcode. Use the workspace rather than opening only `App.xcodeproj`.
+3. Select the app target and your signing team/profile, choose the connected iPhone, use **Product → Clean Build Folder**, then build and run the app.
+4. Check native Haptics capability/dispatch results and the game's GameAnalytics startup/error output. Check actual haptic behavior and analytics delivery separately; static inclusion does not prove either one works on the device or reaches a dashboard.
+
+No Cordova install, prepare or platform-add command is required to use that matching prepared artifact. Regenerating it with a different platform or package configuration could discard the prepared registrations. The bridge installation and project-file checks are recorded in [TEST-REPORT.md](TEST-REPORT.md); Xcode compilation, iPhone output and GameAnalytics dashboard delivery remain **NOT RUN** here.
+
+The prepared repair does not update the original Construct source project's bundled addon or make future Build Service exports include the custom bridges. For future builds, use the source update and export process below. See [EXPORT-TROUBLESHOOTING.md](EXPORT-TROUBLESHOOTING.md) for the distinction between a missing runtime file, missing native package and device/backend verification.
+
+For future standalone Xcode exports, the separately supplied repair kit provides local postprocessing using Cordova iOS 8.1.1 and the matching Haptics 1.0.0 and SupereoGameAnalytics 1.0.0-rc.1 packages. Follow the kit's **README** to install its pinned tools and create a fresh repaired output copy; keep the input export intact. Individual manual plugin-install commands are not part of that workflow. Then open the output's `App.xcworkspace` and perform signing/build/device checks as above. The kit is delivered outside this SDK repository and is not evidence of Build Service approval, Xcode compilation or device/backend success.
+
+## Update the QuickChess source before future exports
+
+The supplied source location is `/Users/ben/Downloads/QuickChess/`; its bundled archive is `addons/plugin/Supereo_Haptics.c3addon`. The user now reports bundled Haptics 1.0.1 while the editor has 1.0.2. The original Mac source folder is still unavailable here; an uploaded export copy can be inspected, but does not establish that the source was saved with the updated bundled addon. The export location is `/Users/ben/Downloads/QuickChess Construct 3/`. Rebuild from the original Construct source:
 
 1. Preserve the existing downloaded export at `/Users/ben/Downloads/QuickChess Construct 3/` so its files and logs remain available for diagnosis.
 2. Install `Supereo_Haptics-1.0.2.c3addon` through Construct's Addon Manager, verify editor version `1.0.2.0`, and reload Construct. Open the original folder project at `/Users/ben/Downloads/QuickChess/`. In the **Project Bar**, right-click the project name → **Tools** → **View used addons**. Right-click the bold bundled **Supereo Haptics** entry → **Update to editor version**. Save the folder project and reload/reopen it. These are the official bundled-addon update steps in [Installing third-party addons](https://www.construct.net/en/make-games/manuals/construct-3/tips-and-guides/installing-third-party-addons#bundling-addons-to-projects).
@@ -57,9 +74,10 @@ The user reports the missing `haptics-core.js` import and an iOS splash-screen h
 
    Then run the same command with the fresh export's directory. It accepts a Cordova root, its `www/`, or an iOS/Xcode export root with a unique nested `www/`. If more than one `www/` is present, point to the exact app web directory to avoid ambiguity. Missing local static modules produce a nonzero exit code. Version 1.0.2 can import `haptics-core.js`, but it is now registered and included, so the import must resolve. Review the native bridge registration report separately; before Cordova preparation the plugin's generated loader may not yet be present.
 5. From the fresh Cordova project root, confirm the pinned Supereo dependency is present in `config.xml`, as shown below. Run the standard Cordova iOS 8.1.1 preparation route; it should restore native bridge 1.0.0 from that declaration. Then use `cordova plugin ls` to confirm installation. A plugin called `taptic-engine` is a different plugin: it does not provide `cordova.plugins.SupereoHaptics` or the native `SupereoHaptics` service.
-6. Open the resulting `platforms/ios/App.xcworkspace`, build and install the complete new app with your signing configuration, then capture startup errors and the addon's capability results. If Construct's Build Service is generating the Xcode project, its approval boundary still applies; automatic native inclusion through that service is not established for this package.
+6. Include the game's matching custom **SupereoGameAnalytics** native bridge separately when the game uses that Construct addon. It is independent of Supereo Haptics. The latest Build Service export omitted that native bridge too; a Taptic Engine plugin or an unrelated public GameAnalytics plugin does not provide the matching interface. Use the matching native package with the external build, or postprocess a copied Xcode export using Cordova iOS's supported plugin installation API.
+7. Open the resulting `platforms/ios/App.xcworkspace`, build and install the complete new app with your signing configuration, then capture startup errors and both addons' native results. If Construct's Build Service is generating the Xcode project, approval is required for each custom dependency; future automatic inclusion through that service remains unestablished.
 
-This workflow needs no changes to QuickChess gameplay, analytics, backend or purchases. Both supplied Mac folders are absent from this cloud workspace, so checking the actual source project's bundled addon and auditing the actual export are **NOT RUN** until those files or local outputs are available. Passing a static import audit is useful loading evidence; it does not prove that the splash-screen symptom has only one cause, that Xcode compilation succeeds, or that haptics play on the device. Actual iOS startup and device checks remain **NOT RUN** here.
+This workflow needs no gameplay, analytics event-sheet, backend or purchase changes. The original Mac source folder and editor remain unavailable, so updating the actual project-bundled addon and re-exporting are **NOT RUN** here. The latest supplied export has now been inspected, and its native bridge omissions are confirmed. Passing a static import audit does not prove Xcode compilation, native device output or analytics dashboard delivery. Those checks remain **NOT RUN** here.
 
 ## Export a Cordova project
 
@@ -148,7 +166,7 @@ The packaged `plugin.xml` requires Cordova iOS **8.0.0 or later**; this release'
 | Xcode source phase | `SupereoHaptics.swift` from the installed Supereo plugin |
 | Xcode frameworks/resources | `UIKit.framework`, `CoreHaptics.framework` and `SupereoHaptics.bundle/PrivacyInfo.xcprivacy` |
 
-Actual Cordova iOS 8.1.1 plugin installation, preparation and these project-file inclusions passed in the independent native-check host; see [NATIVE-CHECKS.md](NATIVE-CHECKS.md) and [ios-project-result.json](evidence/ios-project-result.json). Those checks did not inspect the user's QuickChess export or run Xcode. A separately installed `taptic-engine` does not satisfy these Supereo registrations. Do not hand-copy only the Swift file or add a similarly named global: install and prepare the complete package through Cordova.
+Actual Cordova iOS 8.1.1 plugin installation, preparation and these project-file inclusions passed in the independent native-check host; see [NATIVE-CHECKS.md](NATIVE-CHECKS.md) and [ios-project-result.json](evidence/ios-project-result.json). A later repair also installed the bridge into a separate copy of the supplied Xcode export through the supported Cordova iOS platform API; see [TEST-REPORT.md](TEST-REPORT.md). Neither check compiled with Xcode or exercised an iPhone. A separately installed `taptic-engine` does not satisfy these Supereo registrations. Do not hand-copy only the Swift file or add a similarly named global: include the complete package through Cordova's supported installation path.
 
 Generating an Xcode project and compiling/running it are separate checks. A Linux environment may generate project files but cannot provide an Apple SDK compile or an iPhone hardware test. Neither an iOS simulator nor a mocked test demonstrates haptic output.
 
@@ -158,7 +176,7 @@ No iOS haptics permission prompt is required. The included privacy manifest decl
 
 There is no approval for this `cordova-plugin-supereo-haptics` 1.0.0 dependency. Addon 1.0.2 declares it automatically for Cordova exports, but **Build Service remains NOT APPROVED / compatibility UNVERIFIED**. Uploading the `.c3addon` does not request or grant native package approval. A public immutable URL also does not bypass the service's allowlist.
 
-Before relying on Build Service AAB, Android Studio or Xcode-project generation, obtain Scirra approval for this exact dependency, verify the service's compile SDK 36/Swift/iOS deployment support, and validate an export containing the native class and JavaScript plugin module. Until those steps pass, use the external route. Actual service pass-through and export success are **NOT RUN** here.
+Before relying on Build Service AAB, Android Studio or Xcode-project generation, obtain Scirra approval for this exact dependency, verify the service's compile SDK 36/Swift/iOS deployment support, and validate an export containing the native class and JavaScript plugin module. Do the same for the matching SupereoGameAnalytics bridge when the game uses it. Until those steps pass, use the external route or supported postprocessing of both matching native packages. The inspected supplied Build Service export lacked both bridges; future inclusion and device success remain unverified.
 
 Official source evidence and the boundary between approval evidence and a successful build are in [RESEARCH.md](RESEARCH.md). The package is available at the pinned public repository URL; no npm publication or Scirra approval request was made.
 
