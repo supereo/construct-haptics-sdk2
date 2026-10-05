@@ -21,12 +21,14 @@ function readAddonScript(relativeFile, sources) {
 
 function captureAddonRegistration(sources) {
   let RegisteredClass;
-  const registration = { pluginId: "", runtimeMainScript: "", domSideScripts: [], properties: [] };
+  const registration = { pluginId: "", runtimeMainScript: "", additionalRuntimeScripts: [], domSideScripts: [], cordovaPluginReferences: [], properties: [] };
   const info = {};
   for (const method of ["SetName", "SetDescription", "SetCategory", "SetAuthor", "SetHelpUrl", "SetIsSingleGlobal"])
     info[method] = () => {};
   info.SetRuntimeModuleMainScript = value => { registration.runtimeMainScript = value; };
+  info.AddC3RuntimeScript = value => { registration.additionalRuntimeScripts.push(value); };
   info.SetDOMSideScripts = value => { registration.domSideScripts = Array.from(value); };
+  info.AddCordovaPluginReference = (...args) => { registration.cordovaPluginReferences.push(structuredClone(args)); };
   info.SetProperties = value => { registration.properties = Array.from(value); };
   const SDK = {
     Plugins: {},
@@ -52,6 +54,8 @@ async function bundleRegisteredRuntime(sources, registration = captureAddonRegis
   const fileMap = new Map([[runtimeEntry, readAddonScript(registration.runtimeMainScript, sources)]]);
   for (const filename of runtimeModules)
     fileMap.set(prefix + "c3runtime/" + filename, readAddonScript("c3runtime/" + filename, sources));
+  for (const filename of registration.additionalRuntimeScripts)
+    fileMap.set(prefix + filename, readAddonScript(filename, sources));
   const resolvedFiles = [];
   const result = await build({
     entryPoints: [runtimeEntry], bundle: true, write: false, format: "iife",

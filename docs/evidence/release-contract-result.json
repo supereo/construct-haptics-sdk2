@@ -1,0 +1,21 @@
+{
+  "kind": "supereo-release-contract-comparison",
+  "baselineCommit": "d15c7d1b0ec1300b85a7970fa23a773ed7e1f1fd",
+  "addon": "1.0.2",
+  "nativeBridge": "1.0.0",
+  "note": "Compared with published addon1.0.1; excludes metadata version and dependency registration changes.",
+  "unchanged": {
+    "addon/aces.json": true,
+    "addon/c3runtime/actions.js": true,
+    "addon/c3runtime/conditions.js": true,
+    "addon/c3runtime/expressions.js": true,
+    "addon/c3runtime/instance.js": true,
+    "addon/source/runtime-plugin.js": true,
+    "addon/source/dom-handler.js": true,
+    "native/cordova-plugin-supereo-haptics/plugin.xml": true,
+    "native/cordova-plugin-supereo-haptics/www/SupereoHaptics.js": true,
+    "native/cordova-plugin-supereo-haptics/src/android/SupereoHaptics.java": true,
+    "native/cordova-plugin-supereo-haptics/src/ios/SupereoHaptics.swift": true,
+    "editorProperties": true
+  }
+}

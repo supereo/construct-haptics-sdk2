@@ -13,9 +13,15 @@ const PLUGIN_CLASS = SDK.Plugins.Supereo_Haptics = class SupereoHapticsPlugin ex
         this._info.SetHelpUrl(globalThis.lang(".help-url"));
         this._info.SetIsSingleGlobal(true);
         this._info.SetRuntimeModuleMainScript("c3runtime/main.js");
+        this._info.AddC3RuntimeScript("c3runtime/haptics-core.js");
         this._info.SetDOMSideScripts(["c3runtime/domSide.js"]);
-        // The unpublished native package is installed explicitly into external Cordova exports.
-        // A Build Service dependency must only be added after Scirra approves the package/version.
+        // Immutable native package restored automatically by external Cordova builds.
+        // Construct Build Service must approve this dependency before it can build it.
+        this._info.AddCordovaPluginReference({
+            id: "cordova-plugin-supereo-haptics",
+            version: "https://raw.githubusercontent.com/supereo/construct-haptics-sdk2/d15c7d1b0ec1300b85a7970fa23a773ed7e1f1fd/dist/cordova-plugin-supereo-haptics-1.0.0.tgz",
+            platform: "all"
+        });
         SDK.Lang.PushContext(".properties");
         this._info.SetProperties([
             new SDK.PluginProperty("check", "enabled", true),

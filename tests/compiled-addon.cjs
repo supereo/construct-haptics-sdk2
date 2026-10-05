@@ -9,7 +9,8 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 const { unzipSync, strFromU8 } = require("fflate");
 const { createConstructFixture } = require("./helpers/construct-fixture.cjs");
-const { bundleRegisteredRuntime, runtimeModules } = require("./helpers/construct-loader.cjs");
+const { captureAddonRegistration, bundleRegisteredRuntime, runtimeModules } = require("./helpers/construct-loader.cjs");
+const { assertMissingSupereoBridge } = require("./helpers/missing-bridge-check.cjs");
 const root = path.resolve(__dirname, "..");
 const { version } = require("../package.json");
 const artifactName = `Supereo_Haptics-${version}.c3addon`;
@@ -27,20 +28,27 @@ test("the generated addon contains exactly its declared files and matches its ch
   assert.equal(metadata["sdk-version"], 2);
   assert.equal(metadata.version, version + ".0");
   assert.equal(metadata["supports-worker-mode"], true);
-  assert.ok(!sources["addon/c3runtime/main.js"].includes("haptics-core.js"), "the runtime entry does not import an unmapped helper");
-  assert.ok(!metadata["file-list"].includes("c3runtime/haptics-core.js"), "no separate helper file is shipped");
+  assert.match(sources["addon/c3runtime/main.js"], /^\s*import\s*["']\.\/haptics-core\.js["'];/, "the SDK-registered helper is the first runtime import");
+  assert.ok(metadata["file-list"].includes("c3runtime/haptics-core.js"), "the registered helper is shipped");
   for (const file of ["instance", "actions", "conditions", "expressions", "domSide"]) {
     const original = fs.readFileSync(path.join(root, `addon/c3runtime/${file}.js`), "utf8");
     assert.ok(sources[`addon/c3runtime/${file}.js`].length < original.length, `${file} is packaged as minified JavaScript`);
   }
 });
 
-test("the actual minified archive entry bundles through Construct's standard runtime file map", async () => {
+test("the actual minified archive entry bundles through Construct's SDK-registered runtime file map", async () => {
   const result = await bundleRegisteredRuntime(sources);
   assert.equal(result.registration.runtimeMainScript, "c3runtime/main.js");
+  assert.deepEqual(result.registration.additionalRuntimeScripts, ["c3runtime/haptics-core.js"]);
   assert.deepEqual(result.registration.domSideScripts, ["c3runtime/domSide.js"]);
-  assert.deepEqual(result.resolvedFiles.sort(), ["main.js", ...runtimeModules].map(name => "scripts/plugins/Supereo_Haptics/c3runtime/" + name).sort());
+  assert.equal(result.registration.cordovaPluginReferences.length, 1);
+  assert.equal(result.registration.cordovaPluginReferences[0][0].id, "cordova-plugin-supereo-haptics");
+  assert.equal(result.registration.cordovaPluginReferences[0][0].platform, "all");
+  assert.deepEqual(result.registration.cordovaPluginReferences, captureAddonRegistration().cordovaPluginReferences, "minification preserves the complete native dependency declaration, including its pinned URL");
+  assert.deepEqual(result.resolvedFiles.sort(), ["main.js", ...runtimeModules, "haptics-core.js"].map(name => "scripts/plugins/Supereo_Haptics/c3runtime/" + name).sort());
 });
+
+for (const worker of [false, true]) test(`minified addon starts gracefully with Cordova/TapticEngine and no Supereo bridge in ${worker ? "worker" : "main thread"} mode`, () => assertMissingSupereoBridge({ worker, sources, readySignal: worker ? "deviceready" : "timeout" }));
 
 for (const worker of [false, true]) test(`minified addon preserves runtime/DOM contracts in ${worker ? "worker" : "main thread"} messaging`, async t => {
   const f = await createConstructFixture({ worker, sources, properties: [true, 0.5, false, true, 0, 0, 250] });

@@ -1,3 +1,4 @@
+import "./haptics-core.js";
 import "./plugin.js";
 import "./type.js";
 import "./instance.js";

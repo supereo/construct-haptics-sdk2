@@ -1,0 +1,45 @@
+PASS: pinned native tarball SHA-256 matches the published release checksum.
+Creating a new cordova project.
+Using cordova-fetch for cordova-ios@8.1.1
+Adding ios project...
+Creating Cordova project for the iOS platform:
+	Path: platforms/ios
+	Package: com.supereo.haptics.auto
+	Name: SupereoHapticsAuto
+iOS project created with cordova-ios@8.1.1
+Plugin 'cordova-plugin-supereo-haptics' found in config.xml... Migrating it to package.json
+Discovered plugin "cordova-plugin-supereo-haptics". Adding it to the project
+Installing "cordova-plugin-supereo-haptics" for ios
+Adding cordova-plugin-supereo-haptics to package.json
+cordova-plugin-supereo-haptics 1.0.0 "Supereo Haptics"
+{
+  "status": "PASS",
+  "scope": "Real Cordova iOS 8.1.1 automatic URL-tarball dependency restoration and generated project inclusion. Config.xml was constructed from the shipping addon AddCordovaPluginReference declaration captured in a host SDK fixture; no actual Construct exporter, Xcode compilation or device execution.",
+  "explicitPluginAddCommandUsed": false,
+  "declaration": {
+    "reference": {
+      "id": "cordova-plugin-supereo-haptics",
+      "version": "https://raw.githubusercontent.com/supereo/construct-haptics-sdk2/d15c7d1b0ec1300b85a7970fa23a773ed7e1f1fd/dist/cordova-plugin-supereo-haptics-1.0.0.tgz",
+      "platform": "all"
+    },
+    "source": "Shipping addon/plugin.js AddCordovaPluginReference call captured in a host SDK VM fixture; not a Construct editor export.",
+    "addonEditorSourceSha256": "6fb14a22b1e1219373467fea3ac2bf6e8d1f9ef544bccb6d295f48215ee6792a"
+  },
+  "nativePackageSha256": "e2662681fc0b2434a1af13beafd28739b9b68d078a05acc75fcb23201593e25d",
+  "npmLockIntegrity": "sha512-T6XHGchL4LO+BtZuC6GEgbD7E1B1+4f/CCmodsClEHeG5FGnsKFStUpsDnE7JhOSuzI9s6TaW2zYJtbZrb9aJA==",
+  "nativeSwiftSha256": "8967af96cf62560e7a4fbadb780c05c6a3dde8e798362ff92ee93f029ebdcffb",
+  "privacyResourceSha256": "418018c160ded561d379cee1510cfb6e0806573c7221177a5330d76ea4145990",
+  "nativeJavascriptSha256": "4c5b1735433cd2741ae7d6441ed5328dcb7f1e68860550a59be00b6156c28061",
+  "cordovaIOS": "8.1.1",
+  "nativeFeature": "SupereoHaptics",
+  "javascriptClobber": "cordova.plugins.SupereoHaptics",
+  "linkedFrameworks": [
+    "UIKit.framework",
+    "CoreHaptics.framework"
+  ],
+  "nativeSourceBuildPhase": true,
+  "privacyResourceBuildPhase": true,
+  "constructEditorExport": "NOT RUN: Construct editor unavailable.",
+  "xcodeCompilation": "NOT RUN: Linux has no Apple SDK or xcodebuild.",
+  "buildServiceApproval": "UNVERIFIED: native dependency allowlist approval not established."
+}

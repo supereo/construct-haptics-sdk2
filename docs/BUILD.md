@@ -22,37 +22,56 @@ environment in those tests is a controlled fixture: no actual Construct editor,
 Cordova device, Core Haptics engine or Android vibrator is exercised.
 
 Before packaging, the build takes `lib/core.js`, generates a browser-global copy
-for Construct, and embeds it before the source templates
-`addon/source/runtime-plugin.js` and `addon/source/dom-handler.js`. The generated
-scripts are `addon/c3runtime/plugin.js` and `addon/c3runtime/domSide.js`.
+for Construct's runtime-only `addon/c3runtime/haptics-core.js`, and embeds an
+independent browser-global copy before `addon/source/dom-handler.js` in
+`addon/c3runtime/domSide.js`. It copies `addon/source/runtime-plugin.js` to the
+generated `addon/c3runtime/plugin.js`; that file contains the plugin class only.
 The same preparation copies the original shared validator to the native bridge's
 `www/core.js` for Cordova's module loader. Edit the shared core or the templates,
 then rebuild; do not edit the generated addon scripts directly.
 
-The addon ships no separate `c3runtime/haptics-core.js` helper and does not import
-one. Its module entry imports the standard registered runtime scripts, and its
-DOM handler includes its own copy of the same core. This addresses the reported
-Construct file-map resolution failure in addon 1.0.0. The official
+Addon 1.0.2 explicitly registers `c3runtime/haptics-core.js` with
+`AddC3RuntimeScript`, lists it in `addon.json`, and imports it first from
+`main.js`. `SetDOMSideScripts` lists only `domSide.js`; the DOM handler does not
+load the runtime helper path. This follows the official
 [runtime-scripts guide](https://www.construct.net/en/make-games/manuals/addon-sdk/guide/runtime-scripts#adding-a-module-script)
-requires additional imported runtime modules to be registered with
-`AddC3RuntimeScript`, in addition to being listed in `addon.json`. Including a
-file in an archive alone does not perform that registration. The 1.0.1 design
-keeps the validator in scripts that Construct already registers.
+requirement to register additional runtime modules. The original 1.0.0 helper
+was packaged without that registration. Release 1.0.1 addressed that gap by
+embedding the runtime core; its published archive has no helper import.
+Release 1.0.2 chooses explicit runtime registration and keeps the DOM copy
+independent. Tests must resolve the shipping entry through Construct's runtime
+script registry rather than making every archive file implicitly available.
+
+The shipping editor plugin also declares `cordova-plugin-supereo-haptics` 1.0.0
+through `AddCordovaPluginReference`, with platform `all` and its immutable public
+HTTPS tarball as the version spec. Normal external Cordova restoration uses the
+exported declaration. The URL and expected `config.xml` entry are in
+[INSTALLATION.md](INSTALLATION.md). This is a build-time native dependency,
+not a remote gameplay script; Build Service approval remains unestablished.
+
+Actual automatic restoration from a matching constructed Cordova configuration
+passed in a fresh Cordova CLI 13.0.0 / iOS 8.1.1 host without a manual
+`plugin add` command. The reproducible check is
+`tools/native-check/ios-auto-install.sh`; see
+[ios-auto-install-result.json](evidence/ios-auto-install-result.json) and
+[its log](evidence/ios-auto-install.log). This validates external URL restoration
+and native project inclusion, not Construct's actual export of the declaration,
+Xcode compilation, Build Service pass-through or device execution.
 
 ## Outputs
 
 | Artifact | Contents |
 | --- | --- |
-| `Supereo_Haptics-1.0.1.c3addon` | ZIP-based SDK v2 package, Construct metadata version `1.0.1.0`, minified JavaScript and editor metadata at archive root. |
+| `Supereo_Haptics-1.0.2.c3addon` | ZIP-based SDK v2 package, Construct metadata version `1.0.2.0`, minified JavaScript and editor metadata at archive root. |
 | `cordova-plugin-supereo-haptics-1.0.0.zip` | Versioned local Cordova bridge directory, including Java/Swift source and schema module. |
 | `cordova-plugin-supereo-haptics-1.0.0.tgz` | npm-format Cordova package; not published to a registry. |
-| `supereo-haptics-source-1.0.1.zip` | Addon, bridge, shared core and source templates, validators, tests, documentation, demo, examples, schemas and locked build tools. |
+| `supereo-haptics-source-1.0.2.zip` | Addon, bridge, shared core and source templates, validators, export audit, tests, documentation, demo, examples, schemas and locked build tools. |
 | `SHA256SUMS` | SHA-256 of the four distributable archives. |
 
 ```sh
 cd dist
 sha256sum -c SHA256SUMS
-unzip -t Supereo_Haptics-1.0.1.c3addon
+unzip -t Supereo_Haptics-1.0.2.c3addon
 ```
 
 ZIP timestamps are fixed. Identical source and dependency versions produce
@@ -62,16 +81,51 @@ metadata and temporary development signatures; their byte hashes are not
 promised to match another machine's build. The archive itself is not a hardware
 test, and schema validity is not a claim of editor installation.
 
-Addon/source release 1.0.1 updates the Construct packaging only. The native
+Addon/source release 1.0.2 uses explicit runtime helper registration, automatic
+native dependency declaration and export-audit support. The native
 bridge stays at version 1.0.0, so its archive names and installation identity
 retain that version. An existing native bridge 1.0.0 installation does not need
 to be reinstalled for this addon update.
 
 `npm run build` is the packaging-only command. `npm run check` validates the
 manifest, ACE/language schemas and consistency. If `lib/core.js` changes, rebuild
-before running check so the embedded code and native copy are current. Public property names
+before running check so the runtime module, DOM embedding and native copy are current. Public property names
 are preserved during minification. The real Construct **Simple** export
 minifier remains a separate manual editor check.
+
+## Audit an exported game
+
+Run this command from the extracted source release or repository:
+
+```sh
+npm run audit:export -- '/Users/ben/Downloads/QuickChess Construct 3/'
+```
+
+The argument is the user's supplied QuickChess export path. For a different or
+fresh export, substitute its directory. The auditor accepts a Cordova project
+root, the exported `www/` directory, or an iOS/Xcode export with a unique nested
+`www/`. If there are multiple web directories, give the exact intended `www/`
+path. It checks local static module references and
+returns a nonzero exit code for missing local modules. It also reports evidence
+of the separate Supereo Cordova bridge registration. A `taptic-engine` plugin is
+not a replacement for `cordova-plugin-supereo-haptics`.
+
+Audit both the existing output and the full fresh export after updating the
+folder project at `/Users/ben/Downloads/QuickChess/` through Addon Manager,
+then Project Bar → right-click project → Tools → View used addons → right-click
+the bold bundled Supereo Haptics entry → Update to editor version. Save and
+reload the project. Its bundled archive
+`addons/plugin/Supereo_Haptics.c3addon` must show metadata `1.0.2.0` before the
+new export. Updating the editor addon does not rewrite a previous export.
+Follow [INSTALLATION.md](INSTALLATION.md) for the full QuickChess source-update,
+export and Cordova preparation sequence.
+
+This is a read-only static audit, not JavaScript execution, Xcode compilation,
+device playback or proof that a splash-screen hang has only one cause. The
+user's Mac source/export directories are absent from this cloud workspace, so
+checking the actual project-bundled addon and auditing the actual QuickChess
+export remain NOT RUN until those files or local output are provided. See
+[TEST-REPORT.md](TEST-REPORT.md) for the auditor's own test evidence.
 
 ## Visual demo check
 
@@ -110,10 +164,17 @@ mv /absolute/path/to/haptics-demo/www /absolute/path/to/haptics-demo/www-origina
 node tools/create-demo-host.cjs /absolute/path/to/haptics-demo/www
 cd /absolute/path/to/haptics-demo
 cordova platform add android@15.0.0
-cordova plugin add /absolute/path/to/source/native/cordova-plugin-supereo-haptics
 cordova prepare android
+cordova plugin ls
 cordova build android --debug
 ```
+
+Before running `platform add`, declare the same pinned native `<plugin>` entry
+from [INSTALLATION.md](INSTALLATION.md) in the fresh demo host's `config.xml`.
+A generic host does not run Construct's editor registration, so that declaration
+must be supplied by its assembly step. Cordova preparation then restores the
+bridge without a manual `plugin add` command. Use the local package only as the
+documented troubleshooting/offline fallback.
 
 The helper refuses to overwrite an existing `index.html`. It installs the demo
 assets and places `cordova.js` before the demo's scripts. Cordova still performs
@@ -131,8 +192,9 @@ API 36 and Cordova framework classes, including debug/release AABs and lint.
 It is separate from addon packaging and from physical-device execution.
 
 iOS needs macOS, Xcode/Apple SDK, and an iPhone for haptic behavior. A Swift
-tree-sitter parse is only a syntax check. Install the bridge through Cordova,
-prepare the iOS workspace, and build with Xcode as in INSTALLATION.md. Do not
+tree-sitter parse is only a syntax check. Restore the bridge through the exported
+Cordova dependency, prepare the iOS workspace, and build with Xcode as in
+INSTALLATION.md. Do not
 disable trust, use private APIs, or replace unavailable native tests with
 simulated passing results.
 

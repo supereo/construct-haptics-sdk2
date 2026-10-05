@@ -1,6 +1,6 @@
 {
   "name": "supereo-haptics",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "description": "Construct 3 SDK v2 addon and native Cordova haptics bridge",
   "license": "MIT",
@@ -9,14 +9,18 @@
     "check": "node tools/check.cjs",
     "build": "node tools/build.cjs",
     "verify": "npm run build && npm run check && npm test && node --test tests/compiled-addon.cjs",
-    "test:demo": "node tools/demo-check.cjs"
+    "test:demo": "node tools/demo-check.cjs",
+    "audit:export": "node tools/audit-export.cjs"
   },
-  "engines": { "node": ">=22.9.0" },
+  "engines": {
+    "node": ">=22.9.0"
+  },
   "devDependencies": {
+    "acorn": "8.19.0",
     "ajv": "8.17.1",
     "ajv-formats": "3.0.1",
-    "fflate": "0.8.2",
     "esbuild-wasm": "0.28.2",
+    "fflate": "0.8.2",
     "playwright": "1.62.1",
     "terser": "5.44.1"
   }

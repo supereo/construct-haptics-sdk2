@@ -63,6 +63,7 @@ async function createConstructFixture(options = {}) {
   document.createElement = tagName => new ElementFixture(tagName);
   document.createElementNS = (_, tagName) => new ElementFixture(tagName);
   const native = options.native;
+  const cordova = Object.hasOwn(options, "cordova") ? options.cordova : native ? { plugins: { SupereoHaptics: native } } : undefined;
   let Handler;
   let handler;
   let instance;
@@ -84,7 +85,7 @@ async function createConstructFixture(options = {}) {
         return options.vibrationResult !== false;
       }
     },
-    cordova: native ? { plugins: { SupereoHaptics: native } } : undefined,
+    cordova,
     DOMHandler: class {
       constructor(runtimeInterface, componentId) {
         this._runtimeInterface = runtimeInterface;
@@ -100,8 +101,10 @@ async function createConstructFixture(options = {}) {
       AddDOMHandlerClass(value) { Handler = value; }
     }
   });
+  Object.assign(domContext, options.domGlobals);
+  Object.assign(window, options.domGlobals);
   window.window = window;
-  if (native) window.cordova = domContext.cordova;
+  if (cordova) window.cordova = cordova;
   for (const script of registration.domSideScripts)
     executeDOMScript(domContext, "addon/" + script, options.sources);
   const runtimeInterface = {
@@ -149,6 +152,7 @@ async function createConstructFixture(options = {}) {
     runtimeContext.window = window;
     runtimeContext.document = document;
     runtimeContext.navigator = domContext.navigator;
+    runtimeContext.cordova = cordova;
   }
   vm.runInContext(bundledRuntime.code, runtimeContext, { filename: registration.runtimeMainScript + ".bundled.js" });
   const plugin = runtimeContext.C3.Plugins.Supereo_Haptics;

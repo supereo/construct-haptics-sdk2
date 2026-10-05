@@ -1,0 +1,16 @@
+{
+  "kind": "actual-editor-access-probe",
+  "target": "https://editor.construct.net/r495-2/",
+  "browser": "151.0.7922.173",
+  "startedUTC": "2026-10-05T22:03:28.206Z",
+  "attemptedExport": false,
+  "projectAvailable": false,
+  "failures": [
+    {
+      "url": "https://editor.construct.net/r495-2/",
+      "error": "net::ERR_TUNNEL_CONNECTION_FAILED"
+    }
+  ],
+  "navigationError": "page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://editor.construct.net/r495-2/\nCall log:\n\u001b[2m  - navigating to \"https://editor.construct.net/r495-2/\", waiting until \"domcontentloaded\"\u001b[22m\n",
+  "finalURL": "about:blank"
+}

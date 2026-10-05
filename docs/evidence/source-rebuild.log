@@ -1,22 +1,22 @@
-Supereo Haptics addon 1.0.1 / native bridge 1.0.0 — fresh source archive reproduction
+Supereo Haptics addon1.0.2 / native bridge1.0.0 — fresh source archive reproduction
 
-added 21 packages in 499ms
+added 21 packages in 564ms
 
-> supereo-haptics@1.0.1 verify
+> supereo-haptics@1.0.2 verify
 > npm run build && npm run check && npm test && node --test tests/compiled-addon.cjs
 
 
-> supereo-haptics@1.0.1 build
+> supereo-haptics@1.0.2 build
 > node tools/build.cjs
 
-Packaged Supereo_Haptics-1.0.1.c3addon, cordova-plugin-supereo-haptics-1.0.0.tgz, cordova-plugin-supereo-haptics-1.0.0.zip, supereo-haptics-source-1.0.1.zip; SHA256SUMS written.
+Packaged Supereo_Haptics-1.0.2.c3addon, cordova-plugin-supereo-haptics-1.0.0.tgz, cordova-plugin-supereo-haptics-1.0.0.zip, supereo-haptics-source-1.0.2.zip; SHA256SUMS written.
 npm notice
 npm notice New major version of npm available! 11.9.0 -> 12.2.0
 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
 npm notice To update run: npm install -g npm@12.2.0
 npm notice
 
-> supereo-haptics@1.0.1 check
+> supereo-haptics@1.0.2 check
 > node tools/check.cjs
 
 Official schema PASS: addon/addon.json
@@ -24,189 +24,205 @@ Official schema PASS: addon/aces.json
 Official schema PASS: addon/lang/en-US.json
 Identity, versions, paths, and shared-source consistency PASS.
 
-> supereo-haptics@1.0.1 test
+> supereo-haptics@1.0.2 test
 > node --test tests/*.test.cjs
 
-✔ editor registration loads the actual runtime entry and declares its only DOM script (408.481886ms)
-✔ the 1.0.0-style custom core import reproduces file-map-resolver failure despite the file being present (76.361515ms)
-✔ an arbitrary helper import is rejected by the same restricted map (100.241618ms)
-✔ registered entry initializes bundled core in main thread runtime and DOM contexts (101.583137ms)
-✔ registered entry initializes bundled core in worker runtime and DOM contexts (139.862864ms)
-✔ main thread messaging: native initialization, semantic actions, metadata, and capability refresh (472.745583ms)
-✔ main thread messaging: native-required mode rejects missing bridges and never invokes browser vibration (118.973526ms)
-✔ main thread messaging: explicit preview opt-in simulates feedback without hardware claims (203.148308ms)
-✔ main thread messaging: native errors propagate as rejected feedback rather than successful fallback (117.929153ms)
-✔ main thread messaging: state actions stop active work, use global strength once, and suppress disabled feedback (183.320728ms)
-✔ main thread messaging: custom patterns validate before playback and do not serialize player settings (170.330476ms)
-✔ worker messaging: native initialization, semantic actions, metadata, and capability refresh (129.498385ms)
-✔ worker messaging: native-required mode rejects missing bridges and never invokes browser vibration (126.578028ms)
-✔ worker messaging: explicit preview opt-in simulates feedback without hardware claims (111.75123ms)
-✔ worker messaging: native errors propagate as rejected feedback rather than successful fallback (90.227016ms)
-✔ worker messaging: state actions stop active work, use global strength once, and suppress disabled feedback (73.874591ms)
-✔ worker messaging: custom patterns validate before playback and do not serialize player settings (31.3697ms)
-✔ overlap-ignore drops a second busy request; replace cancels before the replacement (44.039049ms)
-✔ rapid duplicates ignore request IDs and labels, while Stop resets suppression (34.387445ms)
-✔ pause, resume, visibility, and pagehide stop work without replaying it (38.932185ms)
-✔ queued native feedback is invalidated on Stop, including an in-flight late acceptance (20.611279ms)
-✔ a blocked native transport has a bounded request queue (26.794397ms)
-✔ bridge initialization errors are queryable and do not claim working hardware (21.773193ms)
-✔ the DOM play watchdog rejects a hung bridge and requests native cancellation (17.500925ms)
-✔ the initialization watchdog settles readiness without claiming hardware after a hung capability query (23.132196ms)
-✔ release drops late native replies and subsequent runtime actions (15.738841ms)
-✔ native accepted:false replies retain error metadata and trigger rejection (17.76269ms)
-✔ named pattern registration is bounded and existing names can be replaced (20.328929ms)
-✔ play waits for an asynchronous strength update before dispatching native feedback (16.932319ms)
-✔ rapid state changes preserve ordered snapshots and play uses the latest strength (18.97818ms)
-✔ an initialization state failure blocks playback until capability refresh successfully reinitializes (20.347572ms)
-✔ release during a delayed initial capability query prevents subsequent native state updates (16.912299ms)
-✔ failed asynchronous state updates block playback and refresh retries the settings (17.919666ms)
-✔ queued cue freshness accepts the 1000 ms boundary (25.221352ms)
-✔ queued cue freshness drops cues older than 1000 ms after bridge recovery (13.776751ms)
-✔ cue freshness is checked after a delayed native settings barrier (16.320318ms)
-✔ cue freshness is checked after delayed initial capabilities and settings (24.575909ms)
-✔ cue freshness is checked again after a slow replacement Stop and before native dispatch (20.260911ms)
-✔ Cordova API uses the SupereoHaptics service and preserves structured success replies (4.270782ms)
-✔ custom patterns are validated and normalized before crossing Cordova exec (2.266213ms)
+✔ editor registration loads the actual runtime entry and declares its only DOM script (694.630254ms)
+✔ editor registration declares the separate native bridge as a pinned Cordova dependency (11.176101ms)
+✔ the 1.0.0-style custom core import reproduces file-map-resolver failure despite the file being present (88.734761ms)
+✔ an arbitrary helper import is rejected by the same restricted map (118.198764ms)
+✔ the editor fixture captures the actual Cordova reference API payload (1.416573ms)
+✔ registered entry initializes mapped runtime core and embedded DOM core in main thread contexts (192.714521ms)
+✔ registered entry initializes mapped runtime core and embedded DOM core in worker contexts (189.844284ms)
+✔ main thread messaging: native initialization, semantic actions, metadata, and capability refresh (609.979934ms)
+✔ main thread messaging: native-required mode rejects missing bridges and never invokes browser vibration (134.075152ms)
+✔ main thread messaging: explicit preview opt-in simulates feedback without hardware claims (181.348475ms)
+✔ main thread messaging: native errors propagate as rejected feedback rather than successful fallback (118.032713ms)
+✔ main thread messaging: state actions stop active work, use global strength once, and suppress disabled feedback (177.793882ms)
+✔ main thread messaging: custom patterns validate before playback and do not serialize player settings (85.226648ms)
+✔ worker messaging: native initialization, semantic actions, metadata, and capability refresh (127.242933ms)
+✔ worker messaging: native-required mode rejects missing bridges and never invokes browser vibration (177.33482ms)
+✔ worker messaging: explicit preview opt-in simulates feedback without hardware claims (106.670613ms)
+✔ worker messaging: native errors propagate as rejected feedback rather than successful fallback (115.675563ms)
+✔ worker messaging: state actions stop active work, use global strength once, and suppress disabled feedback (147.714413ms)
+✔ worker messaging: custom patterns validate before playback and do not serialize player settings (47.082003ms)
+✔ overlap-ignore drops a second busy request; replace cancels before the replacement (114.173586ms)
+✔ rapid duplicates ignore request IDs and labels, while Stop resets suppression (173.502754ms)
+✔ pause, resume, visibility, and pagehide stop work without replaying it (85.996318ms)
+✔ queued native feedback is invalidated on Stop, including an in-flight late acceptance (100.9452ms)
+✔ a blocked native transport has a bounded request queue (112.034229ms)
+✔ bridge initialization errors are queryable and do not claim working hardware (54.515148ms)
+✔ the DOM play watchdog rejects a hung bridge and requests native cancellation (35.13988ms)
+✔ the initialization watchdog settles readiness without claiming hardware after a hung capability query (63.02939ms)
+✔ release drops late native replies and subsequent runtime actions (25.620854ms)
+✔ native accepted:false replies retain error metadata and trigger rejection (50.406741ms)
+✔ named pattern registration is bounded and existing names can be replaced (58.71322ms)
+✔ play waits for an asynchronous strength update before dispatching native feedback (22.834462ms)
+✔ rapid state changes preserve ordered snapshots and play uses the latest strength (27.173788ms)
+✔ an initialization state failure blocks playback until capability refresh successfully reinitializes (22.476359ms)
+✔ release during a delayed initial capability query prevents subsequent native state updates (17.486864ms)
+✔ failed asynchronous state updates block playback and refresh retries the settings (17.21157ms)
+✔ queued cue freshness accepts the 1000 ms boundary (24.847771ms)
+✔ queued cue freshness drops cues older than 1000 ms after bridge recovery (18.481112ms)
+✔ cue freshness is checked after a delayed native settings barrier (15.48201ms)
+✔ cue freshness is checked after delayed initial capabilities and settings (26.460193ms)
+✔ cue freshness is checked again after a slow replacement Stop and before native dispatch (24.120204ms)
+✔ Cordova API uses the SupereoHaptics service and preserves structured success replies (4.213436ms)
+✔ custom patterns are validated and normalized before crossing Cordova exec (2.239463ms)
 ▶ malformed requests reject as Promises without invoking the native transport
-  ✔ null (1.26832ms)
-  ✔ array (0.693064ms)
-  ✔ unknown kind (0.684721ms)
-  ✔ unknown impact (0.615116ms)
-  ✔ unknown notification (0.678532ms)
-  ✔ invalid pattern (0.82347ms)
-  ✔ negative strength (0.786564ms)
-  ✔ too large strength (1.48091ms)
-  ✔ nonfinite strength (0.630089ms)
-  ✔ string strength (0.579012ms)
-  ✔ unknown overlap (0.694426ms)
-  ✔ number request id (0.572563ms)
-  ✔ oversized request id (0.645623ms)
-✔ malformed requests reject as Promises without invoking the native transport (11.409262ms)
+  ✔ null (1.414821ms)
+  ✔ array (0.852113ms)
+  ✔ unknown kind (0.870211ms)
+  ✔ unknown impact (0.892965ms)
+  ✔ unknown notification (0.846996ms)
+  ✔ invalid pattern (1.044373ms)
+  ✔ negative strength (1.037593ms)
+  ✔ too large strength (2.298321ms)
+  ✔ nonfinite strength (0.83662ms)
+  ✔ string strength (1.332086ms)
+  ✔ unknown overlap (0.791522ms)
+  ✔ number request id (0.788828ms)
+  ✔ oversized request id (0.805893ms)
+✔ malformed requests reject as Promises without invoking the native transport (15.585351ms)
 ▶ state validation rejects coercion and invalid ranges before exec
-  ✔ null (0.689619ms)
-  ✔ [] (0.56422ms)
-  ✔ {"enabled":1} (0.480764ms)
-  ✔ {"enabled":"false"} (0.484589ms)
-  ✔ {"strength":-1} (0.51105ms)
-  ✔ {"strength":null} (0.489577ms)
-  ✔ {"strength":"0.5"} (0.472031ms)
-✔ state validation rejects coercion and invalid ranges before exec (4.155177ms)
+  ✔ null (0.730199ms)
+  ✔ [] (0.640935ms)
+  ✔ {"enabled":1} (0.530299ms)
+  ✔ {"enabled":"false"} (0.467965ms)
+  ✔ {"strength":-1} (0.569758ms)
+  ✔ {"strength":null} (0.52433ms)
+  ✔ {"strength":"0.5"} (0.61105ms)
+✔ state validation rejects coercion and invalid ranges before exec (4.626187ms)
 ▶ native failure objects and legacy strings become stable Error rejections
-  ✔ HARDWARE_UNAVAILABLE: No haptics engine (0.636028ms)
-  ✔ NATIVE_ERROR: legacy native error (0.581336ms)
-  ✔ NATIVE_ERROR: Native haptics request failed. (0.517789ms)
-✔ native failure objects and legacy strings become stable Error rejections (2.037378ms)
-✔ an exec exception rejects promptly and clears its watchdog (0.713574ms)
-✔ a play watchdog timeout requests native cancellation and ignores late callbacks (0.807116ms)
-✔ capability timeout fails without claiming a native backend or starting feedback (0.635798ms)
-✔ duplicate native callbacks settle a request exactly once (0.607836ms)
-✔ normalization accepts JSON and object inputs, sorts events, and preserves caller data (2.522709ms)
-✔ valid inclusive duration/event/point boundaries are accepted (1.846871ms)
+  ✔ HARDWARE_UNAVAILABLE: No haptics engine (0.694175ms)
+  ✔ NATIVE_ERROR: legacy native error (0.57764ms)
+  ✔ NATIVE_ERROR: Native haptics request failed. (0.538521ms)
+✔ native failure objects and legacy strings become stable Error rejections (2.169748ms)
+✔ an exec exception rejects promptly and clears its watchdog (0.582216ms)
+✔ a play watchdog timeout requests native cancellation and ignores late callbacks (0.873806ms)
+✔ capability timeout fails without claiming a native backend or starting feedback (0.776379ms)
+✔ duplicate native callbacks settle a request exactly once (0.518861ms)
+✔ normalization accepts JSON and object inputs, sorts events, and preserves caller data (2.511462ms)
+✔ valid inclusive duration/event/point boundaries are accepted (2.194785ms)
 ▶ malformed JSON, top-level schema, empty, excessive, and sparse events are rejected
-  ✔ malformed JSON (0.569167ms)
-  ✔ oversized JSON (0.189515ms)
-  ✔ null (0.13233ms)
-  ✔ array (0.142995ms)
-  ✔ boolean (0.111207ms)
-  ✔ number (0.155625ms)
-  ✔ missing version (0.168334ms)
-  ✔ wrong version (0.197047ms)
-  ✔ unknown field (7.445462ms)
-  ✔ missing events (0.163185ms)
-  ✔ non-array events (0.06665ms)
-  ✔ empty events (0.105659ms)
-  ✔ too many events (0.05929ms)
-  ✔ sparse events (0.107873ms)
-  ✔ null event (0.122174ms)
-  ✔ array event (0.088904ms)
-✔ malformed JSON, top-level schema, empty, excessive, and sparse events are rejected (11.94011ms)
+  ✔ malformed JSON (0.627926ms)
+  ✔ oversized JSON (0.154543ms)
+  ✔ null (0.132209ms)
+  ✔ array (0.23908ms)
+  ✔ boolean (0.157758ms)
+  ✔ number (0.138979ms)
+  ✔ missing version (4.330451ms)
+  ✔ wrong version (0.253722ms)
+  ✔ unknown field (3.195112ms)
+  ✔ missing events (0.098027ms)
+  ✔ non-array events (0.066059ms)
+  ✔ empty events (0.105108ms)
+  ✔ too many events (0.055864ms)
+  ✔ sparse events (0.065218ms)
+  ✔ null event (0.081663ms)
+  ✔ array event (0.05315ms)
+✔ malformed JSON, top-level schema, empty, excessive, and sparse events are rejected (12.103557ms)
 ▶ event timing and unit ranges reject coercion, fractions, nonfinite numbers, and wrong fields
-  ✔ missing type (1.064423ms)
-  ✔ unknown type (0.067211ms)
-  ✔ unknown event field (0.121744ms)
-  ✔ negative time (0.064808ms)
-  ✔ fractional time (0.044207ms)
-  ✔ string time (0.03946ms)
-  ✔ infinite time (0.048673ms)
-  ✔ transient exceeds duration (0.063135ms)
-  ✔ transient with duration (0.088113ms)
-  ✔ missing intensity (0.050346ms)
-  ✔ negative intensity (0.037877ms)
-  ✔ intensity above one (0.042915ms)
-  ✔ string intensity (0.056014ms)
-  ✔ null intensity (0.035884ms)
-  ✔ NaN intensity (0.03332ms)
-  ✔ infinite intensity (0.052509ms)
-  ✔ sharpness above one (0.084017ms)
-  ✔ null sharpness (0.077476ms)
-  ✔ boolean sharpness (0.111098ms)
-  ✔ zero continuous duration (0.056805ms)
-  ✔ negative duration (0.038868ms)
-  ✔ fractional duration (0.039229ms)
-  ✔ string duration (0.033861ms)
-  ✔ missing continuous duration (0.044678ms)
-  ✔ continuous end exceeds duration (4.173645ms)
-✔ event timing and unit ranges reject coercion, fractions, nonfinite numbers, and wrong fields (8.264946ms)
+  ✔ missing type (4.279966ms)
+  ✔ unknown type (0.068252ms)
+  ✔ unknown event field (0.124067ms)
+  ✔ negative time (0.065419ms)
+  ✔ fractional time (0.04613ms)
+  ✔ string time (0.03958ms)
+  ✔ infinite time (0.03969ms)
+  ✔ transient exceeds duration (0.043035ms)
+  ✔ transient with duration (0.054422ms)
+  ✔ missing intensity (0.043776ms)
+  ✔ negative intensity (0.036856ms)
+  ✔ intensity above one (0.037427ms)
+  ✔ string intensity (0.035623ms)
+  ✔ null intensity (0.034332ms)
+  ✔ NaN intensity (0.033741ms)
+  ✔ infinite intensity (0.071458ms)
+  ✔ sharpness above one (0.053009ms)
+  ✔ null sharpness (4.220527ms)
+  ✔ boolean sharpness (0.122594ms)
+  ✔ zero continuous duration (0.102394ms)
+  ✔ negative duration (0.085228ms)
+  ✔ fractional duration (0.076395ms)
+  ✔ string duration (0.063196ms)
+  ✔ missing continuous duration (0.090667ms)
+  ✔ continuous end exceeds duration (0.07318ms)
+✔ event timing and unit ranges reject coercion, fractions, nonfinite numbers, and wrong fields (11.599859ms)
 ▶ continuous curves enforce event-relative timing and bounded ordered control points
-  ✔ curves on transient (0.112359ms)
-  ✔ null curves (0.101643ms)
-  ✔ array curves (0.186311ms)
-  ✔ empty curves (0.058118ms)
-  ✔ unknown parameter (0.064437ms)
-  ✔ empty points (0.068383ms)
-  ✔ non-array points (0.051427ms)
-  ✔ too many points (0.047511ms)
-  ✔ sparse points (0.082985ms)
-  ✔ null point (0.049365ms)
-  ✔ unknown point field (0.048913ms)
-  ✔ negative time (0.051067ms)
-  ✔ fractional time (0.050055ms)
-  ✔ absolute time beyond event duration (0.051167ms)
-  ✔ duplicate times (6.107187ms)
-  ✔ descending times (0.15276ms)
-  ✔ value above one (0.066791ms)
-  ✔ missing value (0.072059ms)
-  ✔ nonfinite value (0.058598ms)
-✔ continuous curves enforce event-relative timing and bounded ordered control points (8.635805ms)
-✔ the nine named presets retain semantic identity and return independent values (0.501075ms)
-✔ shared core loads without Node globals in a browser/worker and matches CommonJS normalization (1.987914ms)
-✔ full JavaScript pipeline uses valid native fields and the packaged validator in main thread mode (987.141477ms)
-✔ full JavaScript pipeline uses valid native fields and the packaged validator in worker mode (207.021671ms)
-ℹ tests 139
+  ✔ curves on transient (0.137667ms)
+  ✔ null curves (0.130366ms)
+  ✔ array curves (0.077366ms)
+  ✔ empty curves (0.089334ms)
+  ✔ unknown parameter (0.091728ms)
+  ✔ empty points (0.091819ms)
+  ✔ non-array points (0.096075ms)
+  ✔ too many points (0.084137ms)
+  ✔ sparse points (0.123065ms)
+  ✔ null point (0.085229ms)
+  ✔ unknown point field (0.08575ms)
+  ✔ negative time (0.083876ms)
+  ✔ fractional time (0.07997ms)
+  ✔ absolute time beyond event duration (0.098919ms)
+  ✔ duplicate times (0.155765ms)
+  ✔ descending times (0.092179ms)
+  ✔ value above one (0.115123ms)
+  ✔ missing value (4.218693ms)
+  ✔ nonfinite value (0.105068ms)
+✔ continuous curves enforce event-relative timing and bounded ordered control points (7.560447ms)
+✔ the nine named presets retain semantic identity and return independent values (0.437098ms)
+✔ shared core loads without Node globals in a browser/worker and matches CommonJS normalization (7.340755ms)
+✔ the import audit parses static imports and re-exports without treating strings, comments or dynamic imports as static (17.717753ms)
+✔ filesystem fixture audits the shipping registered runtime graph for main-thread shape and detects a removed helper (159.026688ms)
+✔ filesystem fixture audits the shipping registered runtime graph for worker shape and detects a removed helper (41.749043ms)
+✔ the import audit resolves web-root URLs, percent escapes, query strings and hashes exactly (42.562938ms)
+✔ a syntax error fails the static audit instead of claiming unresolved source was checked (35.030585ms)
+✔ Taptic Engine registration is separate from Supereo and optional missing-native enforcement (74.675559ms)
+✔ static iOS registration is reported only when both JavaScript modules, files, namespace and native feature are present (78.243492ms)
+✔ the audit CLI returns failure for the reported missing-file defect and emits a structured report (329.370706ms)
+✔ full JavaScript pipeline uses valid native fields and the packaged validator in main thread mode (883.235431ms)
+✔ full JavaScript pipeline uses valid native fields and the packaged validator in worker mode (96.485324ms)
+✔ Cordova with only TapticEngine completes missing-Supereo startup on timeout in main thread mode and keeps ACEs usable (1041.143882ms)
+✔ Cordova with only TapticEngine completes missing-Supereo startup on deviceready in main thread mode and keeps ACEs usable (117.179409ms)
+✔ Cordova with only TapticEngine completes missing-Supereo startup on timeout in worker mode and keeps ACEs usable (111.777909ms)
+✔ Cordova with only TapticEngine completes missing-Supereo startup on deviceready in worker mode and keeps ACEs usable (80.030318ms)
+ℹ tests 153
 ℹ suites 0
-ℹ pass 139
+ℹ pass 153
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 2381.624131
+ℹ duration_ms 3201.887787
 npm notice
 npm notice New major version of npm available! 11.9.0 -> 12.2.0
 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
 npm notice To update run: npm install -g npm@12.2.0
 npm notice
-✔ the generated addon contains exactly its declared files and matches its checksum (2.040323ms)
-✔ the actual minified archive entry bundles through Construct's standard runtime file map (243.268414ms)
-✔ minified addon preserves runtime/DOM contracts in main thread messaging (41.798786ms)
-✔ minified addon preserves runtime/DOM contracts in worker messaging (72.226488ms)
-✔ minified addon preserves native calls and structured errors in main thread messaging (28.031002ms)
-✔ minified addon preserves native calls and structured errors in worker messaging (29.667578ms)
-✔ minified addon drops stale queued cues before native dispatch in main thread messaging (50.449542ms)
-✔ minified addon drops stale queued cues before native dispatch in worker messaging (29.813347ms)
-ℹ tests 8
+✔ the generated addon contains exactly its declared files and matches its checksum (2.254665ms)
+✔ the actual minified archive entry bundles through Construct's SDK-registered runtime file map (244.110742ms)
+✔ minified addon starts gracefully with Cordova/TapticEngine and no Supereo bridge in main thread mode (71.949293ms)
+✔ minified addon starts gracefully with Cordova/TapticEngine and no Supereo bridge in worker mode (54.763051ms)
+✔ minified addon preserves runtime/DOM contracts in main thread messaging (52.220793ms)
+✔ minified addon preserves runtime/DOM contracts in worker messaging (35.047842ms)
+✔ minified addon preserves native calls and structured errors in main thread messaging (52.261344ms)
+✔ minified addon preserves native calls and structured errors in worker messaging (26.781152ms)
+✔ minified addon drops stale queued cues before native dispatch in main thread messaging (37.644391ms)
+✔ minified addon drops stale queued cues before native dispatch in worker messaging (43.665238ms)
+ℹ tests 10
 ℹ suites 0
-ℹ pass 8
+ℹ pass 10
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 573.68099
+ℹ duration_ms 712.378693
 npm notice
 npm notice New major version of npm available! 11.9.0 -> 12.2.0
 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
 npm notice To update run: npm install -g npm@12.2.0
 npm notice
-BYTE-IDENTICAL Supereo_Haptics-1.0.1.c3addon
-BYTE-IDENTICAL cordova-plugin-supereo-haptics-1.0.0.zip
+BYTE-IDENTICAL Supereo_Haptics-1.0.2.c3addon
 BYTE-IDENTICAL cordova-plugin-supereo-haptics-1.0.0.tgz
-BYTE-IDENTICAL supereo-haptics-source-1.0.1.zip
+BYTE-IDENTICAL cordova-plugin-supereo-haptics-1.0.0.zip
+BYTE-IDENTICAL supereo-haptics-source-1.0.2.zip

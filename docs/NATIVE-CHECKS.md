@@ -41,6 +41,38 @@ bash tools/native-check/ios-project.sh
 
 The script uses the supported Cordova iOS 8.1.1 installation route and refuses to overwrite an existing generated app. Compiling the resulting project still requires macOS/Xcode and the game's own signing configuration. This generated generic Cordova host is separate from a Construct editor export.
 
+## Automatic native restoration: 6 October 2026 (Europe/Paris)
+
+Addon 1.0.2 declares the native bridge with `AddCordovaPluginReference`. A fresh
+actual Cordova CLI 13 / iOS 8.1.1 host restored the public immutable HTTPS tarball
+from `config.xml` during ordinary platform preparation, without a manual
+plugin-add command. The native bridge remains version 1.0.0.
+
+The reproducible check captures the shipping editor script's dependency through
+the SDK host fixture and constructs the corresponding `<plugin>` reference in
+the new host. **It does not run the Construct exporter.** It verifies the public
+tarball's SHA-256 and npm lockfile SHA-512, matches native Swift/privacy/JS files
+to the release, and checks native/JavaScript registration and Xcode source,
+resource and framework phase membership. See the [raw CLI log](evidence/ios-auto-install.log)
+and [structured result](evidence/ios-auto-install-result.json).
+
+```sh
+export SUPEREO_CORDOVA_BIN=/absolute/path/to/cordova-tools/node_modules/.bin/cordova
+export SUPEREO_AUTO_IOS_CHECK_DIR=/tmp/supereo-ios-auto-new
+bash tools/native-check/ios-auto-install.sh
+```
+
+Run `npm ci` for the locked checker dependencies first. The script refuses to
+overwrite an existing generated app. Cordova's URL restoration also needs its
+normal user npm cache to be writable; in this cloud instance that cache was
+created with managed approval. No home-directory variable, installed library,
+TLS trust or integrity verification was changed.
+
+Xcode compilation and device startup/playback remain **NOT RUN**. Actual Construct
+URL-spec export pass-through remains **NOT RUN**. The automatic metadata reference
+does not establish Construct Build Service allowlist approval; that dependency
+has not been approved.
+
 ## Reference toolchain
 
 | Component | Actual version |

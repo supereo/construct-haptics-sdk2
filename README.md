@@ -1,12 +1,13 @@
 # Supereo Haptics
 
 Construct 3 Addon SDK v2 mobile haptics plugin, addon ID **Supereo_Haptics**.
-Addon release **1.0.1** (Construct metadata version **1.0.1.0**).
+Addon release **1.0.2** (Construct metadata version **1.0.2.0**).
 The compatible native Cordova bridge remains **1.0.0**.
 
-The packaged addon is `dist/Supereo_Haptics-1.0.1.c3addon`. Native mobile output
-also needs the separate `cordova-plugin-supereo-haptics` package. Install both
-using [the installation/export guide](docs/INSTALLATION.md).
+The packaged addon is `dist/Supereo_Haptics-1.0.2.c3addon`. It declares the native
+`cordova-plugin-supereo-haptics` dependency automatically, using an immutable
+HTTPS package. Standard Cordova builds restore it from `config.xml`; there is no
+manual plugin-add step in that route. See [the installation/export guide](docs/INSTALLATION.md).
 
 Nine beginner-friendly feedback presets, named custom patterns, Off/Light/Normal
 player preferences, native scheduling, capability-aware fallbacks, cancellation,
@@ -14,16 +15,24 @@ duplicate protection and a visibly labeled browser simulation. No analytics,
 network calls, private native APIs or synthesized audio. Feedback varies with
 hardware and platform settings. An accepted dispatch is not physical completion.
 
-**Build Service compatibility is unverified.** The native package is not
-published or approved by Scirra. A real external Cordova Android host with this
+**Construct Build Service approval is still required.** The package is hosted
+on GitHub and has not been approved by Scirra. A real external Cordova Android host with this
 bridge compiled debug/release and produced APK/AAB artifacts. Construct r495.2
 editor import/export, iOS compilation and physical devices were unavailable;
 see the [actual test report](docs/TEST-REPORT.md).
 
-Version 1.0.1 fixes the Construct build error for an unregistered
-`c3runtime/haptics-core.js` import. The shared validator is now embedded in the
-registered runtime and DOM scripts. Update the addon through Addon Manager and
-reload Construct; an existing native bridge 1.0.0 installation can be retained.
+Version 1.0.2 explicitly registers the runtime-only `c3runtime/haptics-core.js`
+module with `AddC3RuntimeScript`; the DOM handler embeds its own core. This keeps
+the runtime helper available to the documented module exporter while retaining
+the separate DOM dependency. Actions, conditions, expressions, properties and
+native protocol are unchanged.
+
+When a project bundles addons, updating Addon Manager alone does not update the
+project's copy. Right-click the project in Project Bar → **Tools → View used
+addons** → right-click the bold Supereo Haptics entry → **Update to editor
+version**. Save, reload and export to a fresh folder. The published 1.0.1 archive
+has no helper import; a build that still requests it must be inspected for a
+different bundled or cached copy.
 
 ## Start here
 

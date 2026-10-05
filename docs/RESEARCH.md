@@ -1,6 +1,6 @@
 # Native route and API research
 
-Initial research date: 5 October 2026, with a same-day follow-up for addon release 1.0.1. The requested target is Construct 3 r495.2, Addon SDK v2, Worker Auto or Off, Simple minification. The original development checks had no Construct editor session or signed mobile export. The user subsequently reported an actual Construct build loader failure with addon 1.0.0; the agent has not retested the corrected addon 1.0.1 in the editor. Source-level compatibility checks are not a substitute for those checks.
+Initial research date: 5 October 2026, with subsequent follow-ups for addon releases 1.0.1 and 1.0.2. The requested target is Construct 3 r495.2, Addon SDK v2, Worker Auto or Off, Simple minification. The original development checks had no Construct editor session or signed mobile export. The user subsequently reported an actual Construct build loader failure with addon 1.0.0 and a QuickChess iOS export retaining the missing helper import. The agent has not retested addon 1.0.2 in the editor or inspected the actual Mac export. Source-level compatibility checks are not a substitute for those checks.
 
 ## Construct and native dependency inclusion
 
@@ -23,9 +23,39 @@ During the initial 5 October research, direct Construct manual fetches were bloc
 
 The guide explicitly requires an additional imported module to be registered by calling `this._info.AddC3RuntimeScript("c3runtime/mymodule.js")`, added to `addon.json`'s `file-list`, and imported from an existing runtime script. `SetRuntimeModuleMainScript` chooses the module entry; it does not register every arbitrary imported file. The IPluginInfo reference separately documents `AddC3RuntimeScript`, `SetRuntimeModuleMainScript`, and `SetDOMSideScripts`.
 
-Addon 1.0.0 imported a separate `c3runtime/haptics-core.js` file that was packaged but not registered as a runtime script. The user's reported Construct file-map error exposed that gap in the earlier loader fixture. Addon **1.0.1** (Construct metadata **1.0.1.0**) embeds the shared validator in the registered runtime `plugin.js` and DOM `domSide.js` scripts. There is no extra helper module to import or resolve. The build derives both embedded copies from `lib/core.js` and the templates in `addon/source/` before packaging. The native Cordova bridge remains **1.0.0**.
+Addon 1.0.0 imported a separate `c3runtime/haptics-core.js` file that was packaged but not registered as a runtime script. The user's reported Construct file-map error exposed that gap in the earlier loader fixture. Addon **1.0.1** addressed the defect by embedding the shared validator in the registered runtime `plugin.js` and DOM `domSide.js` scripts. Its published archive was inspected and has no runtime helper import.
 
-This correction follows the documented loading model. Its package and loader-contract checks do not establish a successful actual Construct editor retest; that check remains **NOT RUN** until recorded separately. The official IPluginInfo reference also identifies the native dependency API as `AddCordovaPluginReference(opts)`; this release does not call it for its unpublished/unapproved native package.
+Addon **1.0.2** (Construct metadata **1.0.2.0**) instead explicitly calls `AddC3RuntimeScript("c3runtime/haptics-core.js")`, includes that runtime-only module in `addon.json`, and imports it first from `main.js`. The runtime `plugin.js` contains the plugin class only. The DOM handler still embeds its own validator copy and is the sole `SetDOMSideScripts` entry; there is no shared runtime/DOM helper path. The build derives the module and DOM embedding from `lib/core.js` before packaging. The native Cordova bridge remains **1.0.0**.
+
+Both the 1.0.1 embedding and the 1.0.2 explicit runtime registration address the original missing registration. Their package and loader-contract checks do not establish an actual Construct editor retest; that check remains **NOT RUN** until recorded separately. A reported old import after installing 1.0.1 suggests a different bundled/cached/exported copy, but the actual QuickChess files are unavailable, so that diagnosis is not proven.
+
+### Automatic Cordova dependency declaration
+
+The current official [Specifying dependencies guide](https://www.construct.net/en/make-games/manuals/addon-sdk/reference/specifying-dependencies) and IPluginInfo reference were read during this follow-up. `AddCordovaPluginReference(opts)` declares the package ID, optional version spec and target platform. The guide documents emission of a `<plugin name="…" spec="…">` entry in the Cordova export's `config.xml`, and separately states that Build Service requires an allowlist/security review while external Cordova CLI builds do not impose that service restriction.
+
+Addon 1.0.2 uses package ID `cordova-plugin-supereo-haptics`, platform `all`, and this immutable tarball version spec:
+
+```text
+https://raw.githubusercontent.com/supereo/construct-haptics-sdk2/d15c7d1b0ec1300b85a7970fa23a773ed7e1f1fd/dist/cordova-plugin-supereo-haptics-1.0.0.tgz
+```
+
+The public tarball was retrieved and matched the original native 1.0.0 artifact, SHA-256 `e2662681fc0b2434a1af13beafd28739b9b68d078a05acc75fcb23201593e25d`. This allows external Cordova restoration to fetch the native package without an npm publication or routine manual `plugin add`. It is a build-time dependency; the running addon does not download remote haptic code or send player data.
+
+Actual restoration was then tested in a fresh Cordova CLI 13.0.0 / iOS 8.1.1 host using a constructed `config.xml` matching the addon declaration. No manual `plugin add` command was used. Cordova fetched and restored the package, and preparation included its JavaScript namespace, native feature, Swift source, UIKit/CoreHaptics frameworks and privacy resources. [ios-auto-install-result.json](evidence/ios-auto-install-result.json) and [the CLI log](evidence/ios-auto-install.log) record the results; `tools/native-check/ios-auto-install.sh` reproduces this check. The input configuration was not generated by Construct, and no Xcode compilation or device execution occurred.
+
+Actual Construct r495.2 emission of this URL and Build Service pass-through remain **NOT RUN**. The registered dependency is not approval: **Build Service is NOT APPROVED / compatibility UNVERIFIED** for this exact package/reference. Inspect a fresh export's metadata and resulting native registration as described in [INSTALLATION.md](INSTALLATION.md); manual local installation remains a troubleshooting fallback only.
+
+### Project-bundled addon update
+
+The current official [Installing third-party addons guide](https://www.construct.net/en/make-games/manuals/construct-3/tips-and-guides/installing-third-party-addons#bundling-addons-to-projects) was also read. It explains that bundled addons load from the project file and must be updated separately: Project Bar → right-click project → Tools → View used addons → right-click the bold bundled addon → Update to editor version. Save the project, reload/reopen it, and export again. An editor-wide Addon Manager update alone does not establish that the project's bundled copy changed.
+
+### QuickChess export follow-up and static audit
+
+The user reports the missing helper import and an iOS splash-screen hang, including after an attempted addon 1.0.1 update. The supplied source folder is `/Users/ben/Downloads/QuickChess/`, with bundled archive `addons/plugin/Supereo_Haptics.c3addon` originally reported at metadata version `1.0.0.0`. The supplied Xcode export is `/Users/ben/Downloads/QuickChess Construct 3/`. Neither Mac folder is present here; inspection of the current bundled addon, module graph, Cordova registrations, Xcode project and runtime logs is **NOT RUN**. The report supports verifying the separate bundled-addon update and producing a complete fresh Construct export; it does not establish the splash-screen symptom's entire cause.
+
+Release 1.0.2 adds `tools/audit-export.cjs`, exposed as `npm run audit:export -- '/Users/ben/Downloads/QuickChess Construct 3/'`. It accepts a Cordova project root, exported `www/`, or iOS export with a unique nested `www/`, checks local static module references, fails for missing local modules, and reports Supereo bridge registration evidence. Multiple web directories require an explicit app `www/` path. A static audit is separate from runtime execution and hardware validation. [INSTALLATION.md](INSTALLATION.md) gives the source-project update, editor reload, full re-export and native preparation steps; it makes no gameplay, analytics, backend or purchase changes.
+
+The native `plugin.xml` still requires Cordova iOS 8+ and declares feature `SupereoHaptics`, native class `SupereoHaptics`, JavaScript clobber `cordova.plugins.SupereoHaptics`, Swift source and UIKit/CoreHaptics frameworks. Independent Cordova iOS **8.1.1** installation/preparation verified those registrations and the privacy bundle; [ios-project-result.json](evidence/ios-project-result.json) records that evidence. A plugin named `taptic-engine` supplies a different interface and does not satisfy the Supereo bridge dependency. Xcode compilation and iPhone execution remain **NOT RUN**.
 
 ### Build Service findings
 
@@ -37,7 +67,7 @@ More recent official examples show the same process:
 - [#9251, August 2026](https://github.com/Scirra/Construct-bugs/issues/9251): an updated package version was requested and added separately.
 - [#6347](https://github.com/Scirra/Construct-bugs/issues/6347): Scirra recommends exporting a Cordova project and checking its file structure and `config.xml` externally when diagnosing native integration.
 
-This establishes a package/version review boundary. It does **not** establish approval of `cordova-plugin-supereo-haptics@1.0.0`, a complete current submission checklist, or the Build Service's Android/iOS tool versions. This package has not been published to npm or submitted to Scirra. **Build Service compatibility is UNVERIFIED.** The addon intentionally does not insert an unpublished native dependency into Construct's Build Service configuration.
+This establishes a package/version review boundary. It does **not** establish approval of the Supereo native 1.0.0 package/reference, a complete current submission checklist, or the Build Service's Android/iOS tool versions. The package is available at its pinned public repository URL, has not been published to npm, and has not been submitted to Scirra. **Build Service is NOT APPROVED / compatibility UNVERIFIED.** Addon 1.0.2's automatic declaration cannot bypass that boundary.
 
 For a future approval request, prepare a public immutable package version, source and license, both platform declarations, compile/deployment requirements, permission rationale, reproducible builds and test results, and a minimal Construct reproduction. Ask Scirra for its current review requirements before submission. These are practical preparation steps, not a claim that Scirra publishes this exact checklist. Actual approval must name this package/version; a package with a similar name is insufficient.
 
