@@ -2,6 +2,8 @@
 
 Install **`dist/Supereo_Haptics-1.0.3.c3addon`**. Construct metadata version is **1.0.3.0**; addon ID remains **Supereo_Haptics**. The matching native bridge remains **cordova-plugin-supereo-haptics 1.0.0**.
 
+**Current blocker:** the user confirmed that the native tarball's GitHub repository is private. Their actual Mac `cordova prepare ios` log discovers the Supereo dependency from `config.xml`, then npm returns **E404** for its raw GitHub URL. The same failed project dependency also blocks restoration of other plugins. Updating the addon alone cannot make that URL publicly accessible. A separate public native-package host, or an explicitly public repository, must be established before ordinary unauthenticated preparation can work. No visibility change or publication has been made. [Sanitized evidence](evidence/native-distribution-blocker-1.0.3.json).
+
 The chosen workflow is **Construct Cordova project export → normal local Cordova prepare/build**. It uses the same Supereo native bridge and needs **no Scirra approval or native npm publication**. The addon declares its immutable native package automatically. No per-export plugin-add, native file copying, config patching or repair kit is part of this workflow.
 
 A `.c3addon` contains the Construct extension, not compiled Java/Swift. Ordinary Cordova preparation restores the declared native package and generates the native project. Version 1.0.3 improves runtime startup/lifecycle handling; JavaScript cannot create an absent native implementation.
@@ -27,7 +29,7 @@ The shipping addon uses the documented `AddCordovaPluginReference` interface. Co
 
 This is an inspection check, not a request to paste configuration into each export. If the reference is absent, verify the project-bundled addon update and produce a fresh complete export. Retain the error if it is still absent; this environment has not executed a fresh actual Construct 1.0.3 export and cannot label that emission verified.
 
-The tarball was retrieved with TLS verification on 11 October 2026. SHA-256 is **`e2662681fc0b2434a1af13beafd28739b9b68d078a05acc75fcb23201593e25d`**; all nine package files match the unchanged native source. It is downloaded at build time, not during gameplay. The native package does not need to be published to npm for local URL restoration.
+The tarball was retrieved through the managed cloud environment with TLS verification on 11 October 2026. SHA-256 is **`e2662681fc0b2434a1af13beafd28739b9b68d078a05acc75fcb23201593e25d`**; all nine package files match the unchanged native source. That access did not prove anonymous public availability, and the user's Mac subsequently received E404. It is downloaded at build time, not during gameplay. Local URL restoration does not require npm publication, but its host must be accessible to the build machine.
 
 ## Local iOS build on the Mac
 

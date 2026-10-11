@@ -2,6 +2,8 @@
 
 **Not submitted. No npm publication or external message was performed.** This is optional future hosted-service research; the chosen **Construct Cordova export → local Cordova build** route needs no Scirra approval or native npm publication. The draft concerns **native package 1.0.0**, not addon release 1.0.3. It is incomplete for submission while npm publication and unavailable iOS/device pretests remain outstanding.
 
+**Distribution correction:** the repository is confirmed private. Its raw package URL is not publicly accessible to the user or prospective reviewers. An accessible native-package host must be established; the earlier managed-environment retrieval was not an anonymous-public-access check.
+
 ## Proposed title
 
 Build Service allowlist review: cordova-plugin-supereo-haptics 1.0.0 (Android/iOS)
@@ -15,9 +17,9 @@ Please review **`cordova-plugin-supereo-haptics@1.0.0`** for Construct's hosted 
 | Intended npm identity | `cordova-plugin-supereo-haptics@1.0.0`; registry endpoint currently returns 404, so this is not yet a published registry identity. |
 | License | MIT, included in the package. |
 | Immutable reviewed source | [Native source at commit d15c7d1b0ec1300b85a7970fa23a773ed7e1f1fd](https://github.com/supereo/construct-haptics-sdk2/tree/d15c7d1b0ec1300b85a7970fa23a773ed7e1f1fd/native/cordova-plugin-supereo-haptics). |
-| Reviewed package | [Public immutable native TGZ](https://raw.githubusercontent.com/supereo/construct-haptics-sdk2/d15c7d1b0ec1300b85a7970fa23a773ed7e1f1fd/dist/cordova-plugin-supereo-haptics-1.0.0.tgz). This is a review artifact, not npm publication. |
+| Reviewed package | [Private-repository native TGZ](https://raw.githubusercontent.com/supereo/construct-haptics-sdk2/d15c7d1b0ec1300b85a7970fa23a773ed7e1f1fd/dist/cordova-plugin-supereo-haptics-1.0.0.tgz). This is a locally verified package artifact; the URL requires repository access and is not npm publication. |
 | Package SHA-256 | `e2662681fc0b2434a1af13beafd28739b9b68d078a05acc75fcb23201593e25d`. |
-| Source/package identity | Nine files; retrieved tarball matches current native source byte for byte. Its `plugin.xml` also matches the pinned public source manifest. |
+| Source/package identity | Nine files; retrieved tarball matches current native source byte for byte. Its `plugin.xml` also matches the pinned source manifest. |
 | Supported platforms | Android and iOS. |
 | Platform constraints | Cordova Android **15.0.0+**, JDK **17**, compile SDK **36**, minimum device API **24**; Cordova iOS **8.0.0+**, Swift **5**, minimum iOS **13**. |
 | Native dependencies | UIKit and CoreHaptics system frameworks on iOS; standard public Android APIs. No third-party framework/pod/NDK dependency. |

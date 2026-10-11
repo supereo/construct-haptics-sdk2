@@ -1,5 +1,11 @@
 # Release notes
 
+**Known distribution blocker for 1.0.3:** the declared native tarball is hosted
+in a private GitHub repository. The user's ordinary Mac preparation returned
+npm E404 even though Construct emitted the plugin declaration. Prior cloud
+restoration did not prove public access. Runtime fixes remain valid, but normal
+installation needs an accessible native-package host; see [TEST-REPORT.md](TEST-REPORT.md).
+
 ## Addon 1.0.3 / native bridge 1.0.0
 
 Bounds the complete runtime-to-DOM startup handshake and allows **Refresh

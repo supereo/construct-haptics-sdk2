@@ -1,5 +1,7 @@
 # Native route and API research
 
+**Follow-up distribution correction:** the user confirmed that the native GitHub archive is in a private repository. The actual Mac preparation log discovers the declared Supereo dependency but npm returns E404 fetching it. Earlier managed-environment retrieval did not establish anonymous public access. Local Cordova needs no Scirra approval, but the native package needs an accessible host. [Evidence](evidence/native-distribution-blocker-1.0.3.json).
+
 Initial research date: 5 October 2026, with subsequent follow-ups for addon releases 1.0.1 and 1.0.2. The requested target is Construct 3 r495.2, Addon SDK v2, Worker Auto or Off, Simple minification. The original development checks had no Construct editor session or signed mobile export. The user subsequently reported an actual Construct build loader failure with addon 1.0.0 and a QuickChess iOS export retaining the missing helper import. An uploaded latest export was later inspected as recorded below; the original Mac source remains unavailable. The agent has not retested addon 1.0.2 in the editor. Source-level compatibility checks are not a substitute for editor or device checks.
 
 ## Follow-up: 11 October 2026 UTC

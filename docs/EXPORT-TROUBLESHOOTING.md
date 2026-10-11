@@ -1,6 +1,6 @@
 # Diagnose the exported app at the right layer
 
-The chosen route is **Construct Cordova source export → ordinary local Cordova prepare/build** with the existing Supereo native bridge. The addon's declared pinned URL restores automatically; local builds need no Scirra approval or native npm publication. See [INSTALLATION.md](INSTALLATION.md) for the standard commands. No copied-export repair kit or per-export plugin-add/config patch is required.
+The chosen route is **Construct Cordova source export → ordinary local Cordova prepare/build** with the existing Supereo native bridge. Local builds need no Scirra approval. However, the current declared native URL is hosted in a private GitHub repository and the user's Mac receives npm E404. Construct did emit the declaration; package distribution must be fixed before ordinary preparation can restore it. See [INSTALLATION.md](INSTALLATION.md) for the standard commands. No copied-export repair kit or per-export plugin-add/config patch is required.
 
 A Construct addon, its exported JavaScript and its native Cordova package are separate parts. Successful gameplay can coexist with missing native haptics or analytics. A generated Xcode workspace can also contain the correct files without having passed compilation or physical-device checks.
 

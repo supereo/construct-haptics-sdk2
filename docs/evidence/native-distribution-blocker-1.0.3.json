@@ -1,0 +1,25 @@
+{
+  "status": "BLOCKED: native dependency is not publicly accessible",
+  "addonVersion": "1.0.3.0",
+  "nativePackageVersion": "1.0.0",
+  "nativePackageUrl": "https://raw.githubusercontent.com/supereo/construct-haptics-sdk2/d15c7d1b0ec1300b85a7970fa23a773ed7e1f1fd/dist/cordova-plugin-supereo-haptics-1.0.0.tgz",
+  "repositoryPrivate": "CONFIRMED by user",
+  "actualMacCordovaPrepare": {
+    "pluginDeclarationDiscovered": true,
+    "nativePackageFetch": "npm E404 for pinned raw GitHub URL",
+    "otherPluginFailures": "npm installation resolves the project dependency set; the same inaccessible native tarball appears while restoring unrelated plugins."
+  },
+  "managedEnvironmentChecks": {
+    "rawPackageHttpStatus": 200,
+    "rawPackageSha256": "e2662681fc0b2434a1af13beafd28739b9b68d078a05acc75fcb23201593e25d",
+    "ordinaryGitHubPageHttpStatus": 404,
+    "publicJsDelivrPackageHttpStatus": 404,
+    "npmAuthentication": "ENEEDAUTH",
+    "repositoryVisibilityApi": "NOT RUN: api.github.com is blocked by the current HTTP destination policy",
+    "authenticationInjection": "Not inspected or established; managed-proxy success is insufficient proof of anonymous access."
+  },
+  "correction": "Prior successful Cordova restoration verifies installer/project inclusion in the managed environment, but does not verify publicly accessible distribution on a user machine.",
+  "nativePackagePublication": "NOT DONE: separate public native hosting needs user choice and publication credentials. Main repository visibility unchanged.",
+  "embeddedNativeDependencyRoute": "NOT VERIFIED: the SDK file dependency export path/renaming and literal Cordova file spec have not been established in an actual export.",
+  "privacy": "Only sanitized dependency outcomes recorded; no game identifiers, project files, credentials or player data included."
+}

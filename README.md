@@ -4,6 +4,13 @@ Construct 3 Addon SDK v2 mobile haptics plugin, addon ID **Supereo_Haptics**.
 Addon release **1.0.3** (Construct metadata version **1.0.3.0**).
 The compatible native Cordova bridge remains **1.0.0**.
 
+**Installation blocker confirmed by the user's Mac log:** this repository is
+private. The declared raw GitHub native-package URL returns npm **E404** during
+ordinary Cordova preparation. The dependency was emitted by Construct, but its
+download failed. Earlier managed-environment access did not establish anonymous
+public availability. Native distribution needs a separately accessible host;
+see the [corrected test report](docs/TEST-REPORT.md).
+
 The packaged addon is `dist/Supereo_Haptics-1.0.3.c3addon`. Export a **Cordova
 project** from Construct and use normal local Cordova preparation/building.
 The addon declares its matching native bridge automatically; a `.c3addon` alone
@@ -16,8 +23,10 @@ network calls, private native APIs or synthesized audio. Feedback varies with
 hardware and platform settings. An accepted dispatch is not physical completion.
 
 **Local Cordova builds need no Scirra approval or native npm publication.** The
-declared immutable native tarball is publicly available and checksum-verified.
-Normal preparation restores it without per-export plugin-add or repair steps.
+declared immutable native tarball is checksum-verified, but its private GitHub
+host currently blocks installation on an unauthenticated user machine. Normal
+preparation can restore an accessible package without per-export plugin-add or
+repair steps.
 Version 1.0.3 improves startup/lifecycle handling when the matching bridge is
 installed; it cannot create native code from JavaScript. The hosted Construct
 Build Service is a separate option with unmet npm/approval requirements.

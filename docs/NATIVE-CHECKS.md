@@ -2,6 +2,8 @@
 
 This report covers a real, isolated Apache Cordova Android host containing `cordova-plugin-supereo-haptics` 1.0.0 and a separate iOS project generation check. Android was compiled and packaged; iOS was generated and inspected without compilation. Neither check establishes that Construct r495.2 exports, the Construct Build Service, or any physical device has been exercised.
 
+**Later distribution correction:** the user confirmed that the declared GitHub repository is private and reported npm E404 during ordinary Mac preparation. The checks below remain valid for their environments, but do not prove anonymously accessible hosting. [Current blocker](evidence/native-distribution-blocker-1.0.3.json).
+
 ## Actual results: 2026-10-05
 
 | Check | Result | Evidence |

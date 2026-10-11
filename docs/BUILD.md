@@ -43,8 +43,10 @@ independent. Tests must resolve the shipping entry through Construct's runtime
 script registry rather than making every archive file implicitly available.
 
 The shipping editor plugin also declares `cordova-plugin-supereo-haptics` 1.0.0
-through `AddCordovaPluginReference`, with platform `all` and its immutable public
-HTTPS tarball as the version spec. Normal external Cordova restoration uses the
+through `AddCordovaPluginReference`, with platform `all` and its immutable
+HTTPS tarball as the version spec. The repository is private, so the user's
+ordinary Mac restoration currently fails with E404; managed-environment
+retrieval did not establish anonymous access. Normal external Cordova restoration uses the
 exported declaration. The URL and expected `config.xml` entry are in
 [INSTALLATION.md](INSTALLATION.md). This is a build-time native dependency,
 not a remote gameplay script; Build Service approval remains unestablished.
