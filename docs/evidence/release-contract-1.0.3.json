@@ -1,0 +1,9 @@
+{
+  "scope": "Compatibility comparison against published addon1.0.2 and native source snapshot860850a",
+  "addonIDUnchanged": true,
+  "aceDeclarationsByteIdentical": true,
+  "editorRegistrationAndPropertyOrderByteIdentical": true,
+  "nativeFiles": 10,
+  "nativeSourcesAndManifestByteIdentical": true,
+  "interfaceScriptsUnchanged": true
+}

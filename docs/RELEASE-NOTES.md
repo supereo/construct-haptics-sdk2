@@ -1,5 +1,44 @@
 # Release notes
 
+## Addon 1.0.3 / native bridge 1.0.0
+
+Bounds the complete runtime-to-DOM startup handshake and allows **Refresh
+capabilities** to retry initialization using current settings. Late
+`deviceready` and foreground transitions recheck capabilities and restore
+enabled/strength state; stale pre-pause requests, obsolete initialization
+dispatches and obsolete replies are
+dropped. Failed recovery clears stale hardware capability flags and reports an
+error after startup. Release clears the addon's pending watchdogs/listeners.
+These changes handle an app that already contains the matching bridge.
+The runtime-only helper remains registered
+with `AddC3RuntimeScript`; the DOM validator remains independently embedded.
+Event-sheet interfaces, portable pattern format and native bridge version remain
+unchanged. A missing-native error directs users to update a stale project-bundled
+addon once, produce a fresh export and verify native dependency preparation.
+
+The complete startup wait is bounded by `3 × Bridge wait limit + 250 ms`
+(default **7750 ms**). A failed initialization still completes the capability
+check with an unavailable result; it does not report native success or leave
+the runtime load promise waiting indefinitely. Initial startup does not fire a
+gameplay error trigger before loading has completed.
+
+The chosen workflow is **Construct Cordova project export → local Cordova
+prepare/build**. It restores the automatically declared native 1.0.0 tarball and
+needs no Scirra approval or native npm publication. The current public tarball
+was fetched with TLS and its checksum verified. Version 1.0.3 cannot create an
+absent native implementation from runtime JavaScript; normal Cordova preparation
+performs the installation.
+
+The [approval draft](BUILD-SERVICE-APPROVAL-REQUEST.md) identifies the exact native
+1.0.0 source, tarball, checksum, platform requirements and verification limits.
+It is review-only information for the separate hosted Build Service, whose
+npm/approval prerequisites remain unmet. No npm upload or issue submission was
+performed or required for the chosen local route. Fresh
+Construct editor exports, Xcode compilation, physical-device behavior and
+QuickChess editor wiring remain NOT RUN. See [TEST-REPORT.md](TEST-REPORT.md).
+The sections below preserve earlier release history; prior copied-export repairs
+are not the normal local Cordova export/build workflow.
+
 ## Addon 1.0.2 / native bridge 1.0.0
 
 Registers the runtime-only `c3runtime/haptics-core.js` with

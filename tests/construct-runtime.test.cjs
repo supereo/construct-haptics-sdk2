@@ -102,7 +102,7 @@ for (const worker of [false, true]) {
     assert.equal(f.condition("HapticHardwareAvailable"), false);
     assert.equal(f.condition("IsPreviewSimulation"), false);
     assert.equal(f.expression("Backend"), "unavailable");
-    assert.match(f.expression("LastError"), /native Cordova bridge is missing/i);
+    assert.match(f.expression("LastError"), /Supereo native bridge is missing/i);
     assert.equal(f.triggers.length, 0, "initialization failure is queryable without an early event-sheet trigger");
     await f.action("PlayFeedback", 0);
     assert.equal(lastResult(f).accepted, false);
@@ -339,7 +339,7 @@ test("the initialization watchdog settles readiness without claiming hardware af
   const initialization = createConstructFixture({ native: native.api, properties: nativeProperties, setTimeout: clock.setTimeout, clearTimeout: clock.clearTimeout, onInstanceCreated: started });
   await instanceCreated;
   await new Promise(resolve => setImmediate(resolve));
-  assert.equal([...clock.pending.values()][0].milliseconds, 250);
+  assert.deepEqual([...clock.pending.values()].map(timer => timer.milliseconds).sort((a, b) => a - b), [250, 1000]);
   clock.expire(250);
   const f = await initialization;
   t.after(() => f.release());

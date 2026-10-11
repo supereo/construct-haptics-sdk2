@@ -133,17 +133,22 @@ async function createConstructFixture(options = {}) {
       }
       _postToDOMAsync(name, data) {
         messages.push({ name, data: structuredClone(data) });
-        if (!handlers.has(name)) return Promise.reject(new Error(`Unknown DOM message: ${name}`));
         // Worker mode crosses the structured clone boundary before and after
         // the handler. Both modes use the same documented asynchronous API.
         const payload = options.worker ? structuredClone(data) : data;
-        return Promise.resolve().then(() => handlers.get(name)(payload)).then(value =>
-          options.worker ? structuredClone(value) : value);
+        const dispatch = () => {
+          // Construct warns and leaves the response pending when a component
+          // or handler is absent. Model that boundary accurately.
+          if (!handlers.has(name)) return new Promise(() => {});
+          return Promise.resolve().then(() => handlers.get(name)(payload)).then(value =>
+            options.worker ? structuredClone(value) : value);
+        };
+        return options.domTransport ? options.domTransport(name, payload, dispatch) : dispatch();
       }
       _postToDOM(name, data) {
         this._postToDOMAsync(name, data).catch(() => {});
       }
-      _addDOMMessageHandler(name, callback) { runtimeDOMMessages.set(name, callback); }
+      _addDOMMessageHandlers(entries) { for (const [name, callback] of entries) runtimeDOMMessages.set(name, callback); }
       _trigger(condition) { triggers.push(condition); }
       _release() { this.baseReleased = true; }
     }
@@ -157,7 +162,7 @@ async function createConstructFixture(options = {}) {
   vm.runInContext(bundledRuntime.code, runtimeContext, { filename: registration.runtimeMainScript + ".bundled.js" });
   const plugin = runtimeContext.C3.Plugins.Supereo_Haptics;
   instance = new plugin.Instance();
-  if (options.onInstanceCreated) options.onInstanceCreated({ instance, handler, document, window });
+  if (options.onInstanceCreated) options.onInstanceCreated({ instance, handler, document, window, loads, runtimeContext, domContext, handlers });
   await Promise.all(loads);
 
   return {

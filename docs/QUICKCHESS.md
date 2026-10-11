@@ -45,6 +45,17 @@ Offer three simple choices in the game's existing settings screen:
 
 Apply the stored choice at game initialization and whenever the player changes it. The addon is single global, so it applies across layouts. Strength changes and disabling drop current scheduled addon work; effects are not restored from gameplay save/load.
 
+### Connect the existing HapticsEnabled preference
+
+Loading or toggling a game variable named `HapticsEnabled` does not automatically call this generic addon. In Construct's event editor, apply the preference immediately after the saved setting finishes loading and after each settings toggle:
+
+| Event condition | Action |
+| --- | --- |
+| `HapticsEnabled` is true | Supereo Haptics: Set haptics enabled → Enabled |
+| `HapticsEnabled` is false | Supereo Haptics: Set haptics enabled → Disabled |
+
+Use a small existing settings function or the two branches above, rather than adding an every-tick event. If the game also stores Light/Normal, apply `0.35` or `1` through Set overall strength in the enabled branch. These are one-time editor changes, not export repairs. No QuickChess source or event-sheet files were rewritten here; its Windows project and editor session were unavailable, so the wiring remains **NOT RUN**.
+
 Light requests less intensity where the backend supports it. A basic motor may remain on/off, and UIKit selection/notification semantics do not accept arbitrary strength. These cases are reported as approximations. If Light should also reduce the number of cues, omit low-priority selection feedback under that setting while retaining important move or warning cues.
 
 ## Timing and interruptions

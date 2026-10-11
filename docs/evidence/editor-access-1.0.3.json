@@ -1,0 +1,8 @@
+{
+  "kind": "Actual browser navigation probe, not a Construct editor/export test",
+  "url": "https://editor.construct.net/r495-2/",
+  "testedAt": "2026-10-11T22:36:03.616Z",
+  "navigation": "FAIL",
+  "error": "page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://editor.construct.net/r495-2/\nCall log:\n  - navigating to \"https://editor.construct.net/r495-2/\", waiting until \"domcontentloaded\"\n",
+  "constructEditorExecution": "NOT RUN: navigation unavailable"
+}

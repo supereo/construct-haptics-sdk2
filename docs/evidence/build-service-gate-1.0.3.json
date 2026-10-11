@@ -1,0 +1,86 @@
+{
+  "checkedDateUTC": "2026-10-11",
+  "addonRelease": "1.0.3",
+  "nativePackage": {
+    "id": "cordova-plugin-supereo-haptics",
+    "version": "1.0.0",
+    "license": "MIT"
+  },
+  "directConstructBuildServiceAcceptance": "BLOCKED",
+  "scope": "Read-only public documentation, registry and artifact retrieval; no live hosted-service build, private allowlist access, publication, submission or device test.",
+  "officialSDK": {
+    "url": "https://www.construct.net/en/make-games/manuals/addon-sdk/reference/specifying-dependencies",
+    "httpStatus": 200,
+    "rawDocumentSha256": "bd317bfdb79760013986dba7bd8c3b7e17d7dde7851c1aa05a555ce4d13e2b1d",
+    "documentedOptions": [
+      "id",
+      "version",
+      "platform",
+      "variables",
+      "plugin"
+    ],
+    "owningPluginRequiredWhenBindingVariables": true,
+    "owningPluginRequiredWithoutVariables": false,
+    "allowlistAndSecurityReviewRequired": true,
+    "explicitHostedHttpsTarballAcceptanceDocumented": false,
+    "iPluginInfoFreshFetch": "HTTP429; content not reread in this check."
+  },
+  "npmRegistry": {
+    "url": "https://registry.npmjs.org/cordova-plugin-supereo-haptics",
+    "httpStatus": 404,
+    "body": {
+      "error": "Not found"
+    }
+  },
+  "reviewArtifact": {
+    "url": "https://raw.githubusercontent.com/supereo/construct-haptics-sdk2/d15c7d1b0ec1300b85a7970fa23a773ed7e1f1fd/dist/cordova-plugin-supereo-haptics-1.0.0.tgz",
+    "httpStatus": 200,
+    "sha256": "e2662681fc0b2434a1af13beafd28739b9b68d078a05acc75fcb23201593e25d",
+    "tlsVerificationEnabled": true,
+    "nativeSourceFileCount": 9,
+    "allFilesByteIdenticalToNativeSource": true,
+    "pinnedPublicSourceManifestByteIdentical": true,
+    "sourceURL": "https://github.com/supereo/construct-haptics-sdk2/tree/d15c7d1b0ec1300b85a7970fa23a773ed7e1f1fd/native/cordova-plugin-supereo-haptics"
+  },
+  "serviceRules": {
+    "npmRequirement": "https://github.com/Scirra/Construct-bugs/issues/6368#issuecomment-1369771034",
+    "approvalAfterPublication": "https://github.com/Scirra/Construct-bugs/issues/6394#issuecomment-1385298128",
+    "currentPublishedGuidance": "https://www.construct.net/en/forum/construct-3/plugin-sdk-10/build-server-cordova-plugin-149266#forumPost996517",
+    "publishedListLastUpdated": "2026-07-07",
+    "supereoEntryFoundInPublishedList": false,
+    "publishedListMayLagInternalService": true,
+    "exactVersionUpdateReview": "https://github.com/Scirra/Construct-bugs/issues/9027#issuecomment-4250884807",
+    "exactSupereoApproval": "NOT ESTABLISHED",
+    "exactSupereoRejection": "NOT OBSERVED",
+    "currentInternalAllowlist": "NOT READ"
+  },
+  "notRun": [
+    "Fresh Construct r495.2 addon1.0.3 editor export",
+    "Direct hosted-service native export/build",
+    "Current server Android/iOS toolchain compatibility",
+    "Xcode/Apple SDK compilation",
+    "Physical haptic-device behavior",
+    "QuickChess editor/source wiring"
+  ],
+  "publicationPerformed": false,
+  "approvalRequestSubmitted": false,
+  "alternateBackendOrPostExportWorkAccepted": false,
+  "primaryWorkflow": "Construct Cordova project export -> ordinary local Cordova prepare/build with existing matching native1.0.0 URL dependency.",
+  "scirraApprovalOrNativeNpmPublicationRequiredForPrimaryWorkflow": false,
+  "directConstructBuildServiceIsPrimaryWorkflow": false,
+  "localRestorationEvidence": "ios-auto-prepare-1.0.3.json (genuine Cordova prepare; config derived from SDK fixture, not Construct export).",
+  "verifiedRuntimeDomAPI": {
+    "runtimeMethod": "_addDOMMessageHandler(handler, callback) / _addDOMMessageHandlers(arr)",
+    "runtimeReference": "https://www.construct.net/en/make-games/manuals/construct-3/scripting/scripting-reference/addon-sdk-interfaces/isdkinstancebase#internalH1Link0",
+    "runtimeReferenceHTTPStatus": 200,
+    "domMethod": "PostToRuntime(handlerName, data)",
+    "officialExample": "https://github.com/Scirra/Construct-Plugin-Greenworks/blob/04f8d7628481fa22b72adb96ea0536a93e15b698/construct-plugin/c3runtime/domSide.js#L41",
+    "officialExampleHTTPStatus": 200,
+    "scope": "Documented method and current official example; not a real Construct runtime execution."
+  },
+  "localToolchainOfficialGuides": {
+    "ios": "https://cordova.apache.org/docs/en/latest/guide/platforms/ios/",
+    "android": "https://cordova.apache.org/docs/en/latest/guide/platforms/android/",
+    "bothFetchedHTTPStatus": 200
+  }
+}

@@ -2,6 +2,8 @@
 {
     const DOM_COMPONENT_ID = "Supereo_Haptics";
     const MAX_REQUEST_AGE_MS = 1000;
+    const MISSING_BRIDGE_REASON = "The Supereo native bridge is missing from this export.";
+    const MISSING_BRIDGE_INFO = "This export does not include cordova-plugin-supereo-haptics. Verify the project's bundled addon version and prepare the Cordova platform so its declared dependency is restored. Construct Build Service separately requires package approval.";
     const emptyCapabilities = (backend, info) => ({
         backend, bridgeAvailable: false, hardwareAvailable: false, intensityControl: false,
         advancedPatterns: false, amplitudeControl: false, sharpnessControl: false,
@@ -23,6 +25,9 @@
             this._released = false;
             this._suspended = false;
             this._epoch = 0;
+            this._lifecycleEpoch = 0;
+            this._configurationVersion = -1;
+            this._initializationGeneration = 0;
             this._busyUntil = 0;
             this._duplicateWindowMs = 40;
             this._lastFingerprint = "";
@@ -33,6 +38,7 @@
             this._initialization = null;
             this._panel = null;
             this._listeners = [];
+            this._boundedCancels = new Set();
             this.AddRuntimeMessageHandlers([
                 ["haptics-init", e => this._onInit(e)],
                 ["haptics-play", e => this._onPlay(e)],
@@ -70,14 +76,19 @@
         async _bounded(promise, ms)
         {
             let timer;
+            let cancel;
             try
             {
                 return await Promise.race([
                     promise,
-                    new Promise((_, reject) => { timer = setTimeout(() => reject(Object.assign(new Error("The native bridge did not respond within " + ms + " ms."), { code: "native-timeout" })), ms); })
+                    new Promise((_, reject) => {
+                        cancel = () => { clearTimeout(timer); reject(Object.assign(new Error("The haptics addon was released."), { code: "addon-released" })); };
+                        this._boundedCancels.add(cancel);
+                        timer = setTimeout(() => reject(Object.assign(new Error("The native bridge did not respond within " + ms + " ms."), { code: "native-timeout" })), ms);
+                    })
                 ]);
             }
-            finally { clearTimeout(timer); }
+            finally { clearTimeout(timer); this._boundedCancels.delete(cancel); }
         }
 
         _findBridge()
@@ -116,26 +127,73 @@
             this._listen(document, "visibilitychange", () => this._setSuspended(document.visibilityState === "hidden"));
             this._listen(document, "pause", () => this._setSuspended(true));
             this._listen(document, "resume", () => this._setSuspended(false));
+            this._listen(document, "deviceready", () => {
+                if (this._ready && !this._bridgeReady && !this._suspended) this._recover();
+            });
             if (typeof globalThis.addEventListener === "function") this._listen(globalThis, "pagehide", () => this._setSuspended(true));
             this._suspended = document.visibilityState === "hidden";
         }
 
         _setSuspended(suspended)
         {
+            if (this._released) return;
             this._suspended = suspended;
             // Both transitions invalidate work: an old callback must never replay on resume.
             this._epoch++;
+            this._lifecycleEpoch++;
             this._busyUntil = 0;
             this._lastFingerprint = "";
-            if (this._bridge) this._bounded(Promise.resolve().then(() => this._bridge["stop"]()), 1500).catch(() => {});
+            this._bridgeReady = false;
+            const stopped = this._bridge ? this._bounded(Promise.resolve().then(() => this._bridge["stop"]()), 1500).catch(() => {}) : Promise.resolve();
+            const previousState = this._stateBarrier;
+            this._stateBarrier = Promise.all([previousState, stopped]).then(() => {});
+            if (suspended)
+            {
+                this._caps = emptyCapabilities("unavailable", "Haptics are suspended in the background.");
+                this._caps.bridgeAvailable = !!this._bridge;
+                this.PostToRuntime("haptics-status", this._reply());
+            }
+            else this._recover();
             if (this._panel) this._panel.textContent = "Supereo Haptics preview simulation — " + (suspended ? "paused; pending feedback dropped" : "resumed; no feedback replayed");
+        }
+
+        _recover()
+        {
+            if (this._released || this._suspended) return;
+            this._onCapabilities().then(reply => {
+                if (!this._released) this.PostToRuntime("haptics-status", reply);
+            }).catch(() => {});
+        }
+
+        _checkHandshake(epoch, operation)
+        {
+            if (this._released) return false;
+            if (this._suspended || epoch !== this._lifecycleEpoch) throw Object.assign(new Error("Haptics " + operation + " was backgrounded. Retry after resuming."), { code: "backgrounded-during-" + operation });
+            return true;
+        }
+
+        _failedHandshake(error)
+        {
+            this._bridgeReady = false;
+            this._caps = emptyCapabilities("unavailable", error.code === "native-bridge-missing" ? MISSING_BRIDGE_INFO : "Native bridge handshake failed: " + (error.message || error));
+            this._caps.bridgeAvailable = !!this._bridge;
+            this._ready = true;
         }
 
         _onInit(e)
         {
-            if (this._initialization) return this._initialization;
-            this._enabled = e.enabled !== false;
-            this._strength = Math.max(0, Math.min(1, Number.isFinite(e.strength) ? e.strength : 1));
+            if (this._released) return Promise.resolve(this._reply());
+            const generation = Number.isSafeInteger(e.initializationGeneration) ? e.initializationGeneration : 0;
+            if (generation < this._initializationGeneration) return this._initialization || Promise.resolve(this._reply());
+            this._initializationGeneration = generation;
+            const version = Number.isSafeInteger(e.configurationVersion) ? e.configurationVersion : this._configurationVersion + 1;
+            if (version >= this._configurationVersion)
+            {
+                this._configurationVersion = version;
+                this._enabled = e.enabled !== false;
+                this._strength = Math.max(0, Math.min(1, Number.isFinite(e.strength) ? e.strength : 1));
+            }
+            if (this._initialization) return this._initialization.then(() => this._reply());
             this._nativeRequired = e.nativeRequired !== false;
             // Explicit opt-in: no undocumented preview flag is guessed. Native required always wins.
             this._previewAllowed = !this._nativeRequired && e.previewSimulation !== false;
@@ -149,18 +207,17 @@
 
         async _initializeBridge()
         {
+            const epoch = this._lifecycleEpoch;
             try
             {
                 this._bridge = await this._waitForBridge(this._bridgeWaitMs);
-                if (this._released) return this._reply();
+                if (!this._checkHandshake(epoch, "initialization")) return this._reply();
                 if (this._bridge)
                 {
                     const capabilities = await this._bounded(this._bridge["getCapabilities"](), this._bridgeWaitMs);
-                    if (this._released) return this._reply();
-                    if (this._suspended) throw Object.assign(new Error("Initialization was backgrounded. Refresh capabilities after resuming."), { code: "backgrounded-during-initialization" });
+                    if (!this._checkHandshake(epoch, "initialization")) return this._reply();
                     await this._bounded(this._bridge["setState"]({ enabled: this._enabled, strength: this._strength }), this._bridgeWaitMs);
-                    if (this._released) return this._reply();
-                    if (this._suspended) throw Object.assign(new Error("Initialization was backgrounded. Refresh capabilities after resuming."), { code: "backgrounded-during-initialization" });
+                    if (!this._checkHandshake(epoch, "initialization")) return this._reply();
                     this._caps = capabilities;
                     this._bridgeReady = true;
                     this._ready = true;
@@ -172,16 +229,14 @@
                     this._ready = true;
                     return this._reply();
                 }
-                this._caps = emptyCapabilities("unavailable", "The native Cordova bridge is missing. Install cordova-plugin-supereo-haptics in the mobile export.");
+                this._caps = emptyCapabilities("unavailable", MISSING_BRIDGE_INFO);
                 this._ready = true;
-                return this._nativeRequired ? this._error(Object.assign(new Error(this._caps.fallbackInfo), { code: "native-bridge-missing" }), null, "initialize") : this._reply();
+                return this._nativeRequired ? this._error(Object.assign(new Error(MISSING_BRIDGE_REASON), { code: "native-bridge-missing" }), null, "initialize") : this._reply();
             }
             catch (error)
             {
                 if (this._released) return this._reply();
-                this._caps = emptyCapabilities("unavailable", "Native bridge initialization failed: " + (error.message || error));
-                this._caps.bridgeAvailable = !!this._bridge;
-                this._ready = true;
+                this._failedHandshake(error);
                 return this._error(error, null, "initialize");
             }
         }
@@ -227,7 +282,7 @@
                 }
                 else if (!this._bridge)
                 {
-                    return this._error(Object.assign(new Error(this._caps.fallbackInfo), { code: "native-bridge-missing" }), request);
+                    return this._error(Object.assign(new Error(MISSING_BRIDGE_REASON), { code: "native-bridge-missing" }), request);
                 }
                 else
                 {
@@ -262,6 +317,7 @@
 
         async _onStop()
         {
+            if (this._released) return this._reply();
             this._epoch++;
             this._busyUntil = 0;
             this._lastFingerprint = "";
@@ -276,22 +332,27 @@
 
         _onState(e)
         {
+            if (this._released) return Promise.resolve(this._reply());
+            const version = Number.isSafeInteger(e.configurationVersion) ? e.configurationVersion : this._configurationVersion + 1;
+            if (version < this._configurationVersion) return Promise.resolve(this._reply());
+            this._configurationVersion = version;
             if (typeof e.enabled === "boolean") this._enabled = e.enabled;
             if (Number.isFinite(e.strength) && e.strength >= 0 && e.strength <= 1) this._strength = e.strength;
             this._epoch++;
             this._busyUntil = 0;
             this._lastFingerprint = "";
             const state = { enabled: this._enabled, strength: this._strength };
+            const epoch = this._lifecycleEpoch;
             this._stateBarrier = this._stateBarrier.then(async () => {
                 try
                 {
                     if (this._initialization) await this._initialization;
                     if (this._released) return this._reply();
-                    if (this._bridge)
+                    if (this._bridge && !this._suspended && epoch === this._lifecycleEpoch)
                     {
                         await this._bounded(this._bridge["stop"](), 1500);
                         if (this._released) return this._reply();
-                        await this._bounded(this._bridge["setState"](state), 2500);
+                        if (!this._suspended && epoch === this._lifecycleEpoch) await this._bounded(this._bridge["setState"](state), 2500);
                         if (this._released) return this._reply();
                     }
                     this._stateError = null;
@@ -302,31 +363,46 @@
             return this._stateBarrier;
         }
 
-        async _onCapabilities()
+        _onCapabilities()
         {
-            try
-            {
-                if (this._initialization) await this._initialization;
-                if (this._released) return this._reply();
-                if (!this._bridge) this._bridge = this._findBridge();
-                if (this._bridge)
+            const epoch = this._lifecycleEpoch;
+            const refresh = this._stateBarrier.then(async () => {
+                try
                 {
-                    const capabilities = await this._bounded(this._bridge["getCapabilities"](), 2500);
-                    if (this._released) return this._reply();
-                    if (this._suspended) throw Object.assign(new Error("Capability refresh was backgrounded. Refresh again after resuming."), { code: "backgrounded-during-capability-refresh" });
-                    if (!this._bridgeReady || this._stateError)
+                    if (this._initialization) await this._initialization;
+                    if (!this._checkHandshake(epoch, "capability-refresh")) return this._reply();
+                    const found = this._findBridge();
+                    if (found && found !== this._bridge) { this._bridge = found; this._bridgeReady = false; }
+                    if (this._bridge)
                     {
+                        const capabilities = await this._bounded(this._bridge["getCapabilities"](), 2500);
+                        if (!this._checkHandshake(epoch, "capability-refresh")) return this._reply();
                         await this._bounded(this._bridge["setState"]({ enabled: this._enabled, strength: this._strength }), 2500);
-                        if (this._released) return this._reply();
-                        if (this._suspended) throw Object.assign(new Error("Capability refresh was backgrounded. Refresh again after resuming."), { code: "backgrounded-during-capability-refresh" });
+                        if (!this._checkHandshake(epoch, "capability-refresh")) return this._reply();
                         this._bridgeReady = true;
                         this._stateError = null;
+                        this._caps = capabilities;
                     }
-                    this._caps = capabilities;
+                    else if (this._previewAllowed)
+                    {
+                        this._caps = emptyCapabilities("preview-simulation", "Visual preview only. No native haptic hardware has been exercised.");
+                    }
+                    else
+                    {
+                        throw Object.assign(new Error(MISSING_BRIDGE_REASON), { code: "native-bridge-missing" });
+                    }
+                    this._ready = true;
+                    return this._reply(this._result(null, { operation: "capabilities", accepted: !!this._bridge || this._caps.backend === "preview-simulation", reason: "capabilities-refreshed" }));
                 }
-                return this._reply(this._result(null, { operation: "capabilities", accepted: !!this._bridge || this._caps.backend === "preview-simulation", reason: "capabilities-refreshed" }));
-            }
-            catch (error) { return this._error(error, null, "capabilities"); }
+                catch (error)
+                {
+                    if (this._released) return this._reply();
+                    this._failedHandshake(error);
+                    return this._error(error, null, "capabilities");
+                }
+            });
+            this._stateBarrier = refresh.then(() => {}, () => {});
+            return refresh;
         }
 
         _showPreview(request, nativeRequest)
@@ -363,11 +439,14 @@
         {
             this._released = true;
             this._epoch++;
+            this._lifecycleEpoch++;
             this._busyUntil = 0;
             if (this._cancelBridgeWait) this._cancelBridgeWait();
+            for (const cancel of this._boundedCancels) cancel();
+            this._boundedCancels.clear();
             for (const remove of this._listeners.splice(0)) remove();
             if (this._panel) { this._panel.remove(); this._panel = null; }
-            if (this._bridge) this._bounded(Promise.resolve().then(() => this._bridge["stop"]()), 1500).catch(() => {});
+            if (this._bridge) Promise.resolve().then(() => this._bridge["stop"]()).catch(() => {});
             return this._reply();
         }
     };

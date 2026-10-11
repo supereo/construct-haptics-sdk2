@@ -6,7 +6,7 @@
   "type": "plugin",
   "name": "Supereo Haptics",
   "id": "Supereo_Haptics",
-  "version": "1.0.2.0",
+  "version": "1.0.3.0",
   "author": "Supereo",
   "website": "https://github.com/supereo/construct-haptics-sdk2",
   "documentation": "https://github.com/supereo/construct-haptics-sdk2/blob/main/docs/INSTALLATION.md",

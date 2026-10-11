@@ -39,13 +39,13 @@ async function assertMissingSupereoBridge({ worker, sources, readySignal = "time
     });
     await instanceCreated;
     await new Promise(resolve => setImmediate(resolve));
-    assert.equal(timers.size, 1, "startup waits for Cordova readiness within one bounded window");
-    assert.equal([...timers.values()][0].milliseconds, 250);
+    assert.deepEqual([...timers.values()].map(timer => timer.milliseconds).sort((a, b) => a - b), [250, 1000], "namespace wait and entire runtime initialization each have bounded windows");
     if (readySignal === "deviceready") earlyDocument.dispatch("deviceready");
     else {
-      const pending = [...timers.values()];
-      timers.clear();
-      for (const timer of pending) timer.callback();
+      for (const [id, timer] of [...timers]) if (timer.milliseconds === 250) {
+        timers.delete(id);
+        timer.callback();
+      }
     }
     f = await initialization;
     assert.equal(f.condition("IsReady"), true, "a missing plugin cannot prevent Construct's load promise settling");
@@ -57,11 +57,11 @@ async function assertMissingSupereoBridge({ worker, sources, readySignal = "time
     assert.equal(initialResult.accepted, false);
     assert.equal(initialResult.operation, "initialize");
     assert.equal(initialResult.code, "native-bridge-missing");
-    assert.match(f.expression("LastError"), /native Cordova bridge is missing/i);
+    assert.match(f.expression("LastError"), /Supereo native bridge is missing/i);
     assert.match(f.expression("FallbackInfo"), /cordova-plugin-supereo-haptics/);
     assert.equal(f.triggers.length, 0, "startup records its structured error without throwing or firing an early event");
     assert.equal(timers.size, 0);
-    assert.equal(earlyDocument.listeners.get("deviceready").size, 0);
+    assert.equal(earlyDocument.listeners.get("deviceready").size, 1, "one retained readiness listener can discover a bridge appearing later");
 
     for (let index = 0; index < 9; index++) {
       await f.action("PlayFeedback", index);

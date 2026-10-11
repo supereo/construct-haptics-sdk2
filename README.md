@@ -1,13 +1,13 @@
 # Supereo Haptics
 
 Construct 3 Addon SDK v2 mobile haptics plugin, addon ID **Supereo_Haptics**.
-Addon release **1.0.2** (Construct metadata version **1.0.2.0**).
+Addon release **1.0.3** (Construct metadata version **1.0.3.0**).
 The compatible native Cordova bridge remains **1.0.0**.
 
-The packaged addon is `dist/Supereo_Haptics-1.0.2.c3addon`. It declares the native
-`cordova-plugin-supereo-haptics` dependency automatically, using an immutable
-HTTPS package. Standard Cordova builds restore it from `config.xml`; there is no
-manual plugin-add step in that route. See [the installation/export guide](docs/INSTALLATION.md).
+The packaged addon is `dist/Supereo_Haptics-1.0.3.c3addon`. Export a **Cordova
+project** from Construct and use normal local Cordova preparation/building.
+The addon declares its matching native bridge automatically; a `.c3addon` alone
+does not supply Android/iOS implementations. See [installation](docs/INSTALLATION.md).
 
 Nine beginner-friendly feedback presets, named custom patterns, Off/Light/Normal
 player preferences, native scheduling, capability-aware fallbacks, cancellation,
@@ -15,13 +15,18 @@ duplicate protection and a visibly labeled browser simulation. No analytics,
 network calls, private native APIs or synthesized audio. Feedback varies with
 hardware and platform settings. An accepted dispatch is not physical completion.
 
-**Construct Build Service approval is still required.** The package is hosted
-on GitHub and has not been approved by Scirra. A real external Cordova Android host with this
-bridge compiled debug/release and produced APK/AAB artifacts. Construct r495.2
-editor import/export, iOS compilation and physical devices were unavailable;
+**Local Cordova builds need no Scirra approval or native npm publication.** The
+declared immutable native tarball is publicly available and checksum-verified.
+Normal preparation restores it without per-export plugin-add or repair steps.
+Version 1.0.3 improves startup/lifecycle handling when the matching bridge is
+installed; it cannot create native code from JavaScript. The hosted Construct
+Build Service is a separate option with unmet npm/approval requirements.
+The [review-only approval draft](docs/BUILD-SERVICE-APPROVAL-REQUEST.md) records
+the exact package, source and checksum. Nothing was published or submitted.
+Fresh Construct editor exports, Xcode and real-device checks remain NOT RUN;
 see the [actual test report](docs/TEST-REPORT.md).
 
-Version 1.0.2 explicitly registers the runtime-only `c3runtime/haptics-core.js`
+The addon explicitly registers the runtime-only `c3runtime/haptics-core.js`
 module with `AddC3RuntimeScript`; the DOM handler embeds its own core. This keeps
 the runtime helper available to the documented module exporter while retaining
 the separate DOM dependency. Actions, conditions, expressions, properties and
@@ -30,13 +35,14 @@ native protocol are unchanged.
 When a project bundles addons, updating Addon Manager alone does not update the
 project's copy. Right-click the project in Project Bar → **Tools → View used
 addons** → right-click the bold Supereo Haptics entry → **Update to editor
-version**. Save, reload and export to a fresh folder. The published 1.0.1 archive
+version**. Save, reload and export to a fresh folder. Perform this once for the
+updated release; it does not rewrite an existing export. The published 1.0.1 archive
 has no helper import; a build that still requests it must be inspected for a
 different bundled or cached copy.
 
 ## Start here
 
-- [Install and export](docs/INSTALLATION.md): `.c3addon` plus native bridge; Android AAB and iOS workspace route.
+- [Install and export](docs/INSTALLATION.md): one-time editor/project update, automatic native restoration and local iOS/Android builds.
 - [Patterns and presets](docs/PATTERNS.md): bounded version 1 JSON and four example patterns.
 - [Capability/fallback matrix](docs/CAPABILITIES.md): what each platform can really expose.
 - [Generic Construct demo assembly](demo/ASSEMBLY.md): exact event-sheet instructions; no unverified `.c3p`.

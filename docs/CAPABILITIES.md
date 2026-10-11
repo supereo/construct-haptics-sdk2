@@ -2,6 +2,8 @@
 
 Supereo Haptics requests the best available native feedback. A phone's motor, operating-system implementation and player settings determine the actual sensation. A “crisp” tap on one device need not feel or sound like a “crisp” tap on another. This addon generates haptic-only effects and does not synthesize audio.
 
+These native capabilities require the matching **Supereo Haptics bridge 1.0.0** to be installed in the app. Export a Cordova project and use ordinary local Cordova preparation/building to restore the declared bridge automatically; this needs no Scirra approval or native npm publication. Addon **1.0.3** cannot create native code from JavaScript. See [INSTALLATION.md](INSTALLATION.md). An absent bridge with Native required enabled reports `native-bridge-missing`, backend `unavailable` and false hardware capabilities. It does not switch to another plugin or claim native success.
+
 ## Platform matrix
 
 | Feature | iOS 13+ | Android API 24–25 | Android API 26–28 | Android API 29–30 | Android API 31–35 | Android API 36+ |
@@ -67,13 +69,19 @@ Changing strength through the Construct action also drops the current scheduled 
 | --- | --- | --- |
 | Enabled | Yes | Initial player preference. Choose No to start silently. The Set haptics enabled action changes it during play. |
 | Overall strength | `1` | Initial strength between `0` and `1`; `0` is silent, `0.35` is a useful Light setting and `1` is Normal. Set overall strength changes it during play. |
-| Native required | Yes | A missing native bridge produces an explicit error. Keep this on for Android/iOS exports. Turn it off only when deliberately allowing simulation. |
+| Native required | Yes | A missing native bridge produces an explicit error. Keep this on for Android/iOS exports. Turn it off only when deliberately allowing simulation; doing so cannot repair native installation or verify physical output. |
 | Preview simulation | Yes | If Native required is off and no bridge is available, show the requested cue visually. No hardware is exercised. Native required always takes priority. |
 | Overlap policy | Replace active pattern | Replace cancels scheduled previous work. Ignore new request while busy skips the new request during the estimated active interval. Set overlap policy changes it during play. |
 | Duplicate protection (ms) | `40` | Suppress identical rapid cues for this many milliseconds, from `0` to `1000`. `0` disables duplicate suppression. Useful when one interaction accidentally fires two events. |
-| Bridge wait limit (ms) | `2500` | Give initial native readiness at most this many milliseconds, from `250` to `10000`, so a missing bridge cannot leave startup waiting forever. Increase only if a measured native startup needs it. |
+| Bridge wait limit (ms) | `2500` | Limit each bridge startup stage to this many milliseconds, from `250` to `10000`. The complete runtime/DOM initialization also has the separate bound described below. Increase only if a measured native startup needs it. |
 
 The common actions have one simple input: Play feedback chooses a preset, Set haptics enabled chooses Disabled/Enabled, Set overall strength takes a number from 0 to 1, and Set overlap policy chooses Replace/Ignore. Stop feedback and Refresh capabilities have no parameters. Advanced Register custom pattern takes a 1–80-character name and version 1 JSON; Play custom pattern later takes just that name. At most 64 named patterns can be registered. See [PATTERNS.md](PATTERNS.md) for the separate advanced format.
+
+## Startup and capability recovery
+
+Addon 1.0.3 bounds the complete runtime-to-DOM initialization by **`3 × Bridge wait limit + 250 ms`**, default **7750 ms**. On transport/handshake failure, Capability check is ready becomes true with backend unavailable and an error; ready means the check completed, not that haptics work. Initial loading does not fire a gameplay error trigger before startup finishes.
+
+**Refresh capabilities** can retry a dropped initialization using the current enabled, strength and overlap settings. A late `deviceready` or foreground transition rechecks an existing native bridge and reapplies player settings before playback resumes. Failed recovery clears stale hardware flags; errors after startup use the existing On error condition. Backgrounded and obsolete responses cannot restore stale capabilities or replay effects. Runtime release clears pending addon watchdogs/listeners. None of these paths installs a missing native package.
 
 ## Overlap, timing and cancellation
 
@@ -100,3 +108,5 @@ No analytics, player identifiers or network requests are part of the bridge. And
 **On feedback accepted** means the addon accepted the local dispatch. **On feedback rejected** covers settings/overlap/duplicate or other non-playing results; **On error** covers failed validation or bridge/native errors. These are not reliable signals that a motor finished, nor proof that hardware actually produced feedback. Results set `completion: "not-observable"` where native physical output cannot be observed.
 
 Simulated tests and preview demonstrations never count as native/device tests. Check [TEST-REPORT.md](TEST-REPORT.md) for the actual validation record and the real-device checklist.
+
+For a missing bridge, update a stale project-bundled addon once through **Tools → View used addons → Update to editor version**, save/close/reopen, export a fresh Cordova project and inspect ordinary Cordova preparation for the declared package. Refresh can retry a present bridge; it cannot install absent native code. Hosted Build Service approval applies only if choosing that separate build route.

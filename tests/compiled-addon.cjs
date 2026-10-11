@@ -50,6 +50,70 @@ test("the actual minified archive entry bundles through Construct's SDK-register
 
 for (const worker of [false, true]) test(`minified addon starts gracefully with Cordova/TapticEngine and no Supereo bridge in ${worker ? "worker" : "main thread"} mode`, () => assertMissingSupereoBridge({ worker, sources, readySignal: worker ? "deviceready" : "timeout" }));
 
+for (const worker of [false, true]) test(`minified addon bounds a lost initialization and recovers current settings in ${worker ? "worker" : "main thread"} mode`, async t => {
+  let serial = 0, dropped = true, created;
+  const pending = new Map(), states = [];
+  const started = new Promise(resolve => { created = resolve; });
+  const native = {
+    async getCapabilities() { return { backend: "native-test-transport", bridgeAvailable: true, hardwareAvailable: true }; },
+    async setState(state) { states.push(structuredClone(state)); return state; },
+    async stop() { return {}; },
+    async play() { return { accepted: true }; }
+  };
+  const initializing = createConstructFixture({ worker, sources, native, properties: [true, 1, true, true, 0, 0, 250],
+    setTimeout(callback, milliseconds) { pending.set(++serial, { callback, milliseconds }); return serial; },
+    clearTimeout(id) { pending.delete(id); },
+    onInstanceCreated: created,
+    domTransport(name, _payload, dispatch) { return name === "haptics-init" && dropped ? new Promise(() => {}) : dispatch(); }
+  });
+  await started; await new Promise(resolve => setImmediate(resolve));
+  assert.equal(pending.size, 1);
+  const timer = [...pending.values()][0];
+  assert.equal(timer.milliseconds, 1000); timer.callback();
+  const f = await initializing; t.after(() => f.release());
+  assert.equal(f.condition("IsReady"), true);
+  assert.equal(JSON.parse(f.expression("LastResultJSON")).code, "runtime-initialization-timeout");
+  await f.action("SetEnabled", 0); await f.action("SetStrength", 0.3);
+  dropped = false;
+  await f.action("RefreshCapabilities");
+  assert.equal(f.expression("Backend"), "native-test-transport");
+  assert.equal(f.condition("IsEnabled"), false);
+  assert.equal(f.expression("Strength"), 0.3);
+  assert(states.every(state => state.enabled === false && state.strength === 0.3));
+  assert.equal(pending.size, 0);
+});
+
+for (const worker of [false, true]) test(`minified addon publishes foreground recovery and invalidates failed capabilities in ${worker ? "worker" : "main thread"} mode`, async t => {
+  let failure = true;
+  const states = [], plays = [];
+  const native = {
+    async getCapabilities() {
+      if (failure) throw Object.assign(new Error("Host capability failure"), { code: "HOST_QUERY_FAILED" });
+      return { backend: "native-test-transport", bridgeAvailable: true, hardwareAvailable: true };
+    },
+    async setState(state) { states.push(structuredClone(state)); return state; },
+    async stop() { return {}; },
+    async play(request) { plays.push(structuredClone(request)); return { accepted: true }; }
+  };
+  const f = await createConstructFixture({ worker, sources, native, properties: [true, 1, true, true, 0, 0, 250] });
+  t.after(() => f.release());
+  assert.equal(f.expression("Backend"), "unavailable");
+  assert.equal(f.triggers.length, 0);
+  f.document.dispatch("pause");
+  await f.action("SetStrength", 0.4);
+  failure = false; f.document.dispatch("resume"); await f.flush();
+  assert.equal(f.expression("Backend"), "native-test-transport");
+  assert.deepEqual(states.at(-1), { enabled: true, strength: 0.4 });
+  assert.equal(plays.length, 0);
+  await f.action("PlayFeedback", 0); assert.equal(plays.length, 1);
+  failure = true; await f.action("RefreshCapabilities");
+  assert.equal(f.expression("Backend"), "unavailable");
+  assert.equal(f.condition("HapticHardwareAvailable"), false);
+  await f.action("PlayFeedback", 1);
+  assert.equal(JSON.parse(f.expression("LastResultJSON")).code, "native-bridge-not-ready");
+  assert.equal(plays.length, 1);
+});
+
 for (const worker of [false, true]) test(`minified addon preserves runtime/DOM contracts in ${worker ? "worker" : "main thread"} messaging`, async t => {
   const f = await createConstructFixture({ worker, sources, properties: [true, 0.5, false, true, 0, 0, 250] });
   t.after(() => f.release());

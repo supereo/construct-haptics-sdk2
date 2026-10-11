@@ -30,7 +30,7 @@ The same preparation copies the original shared validator to the native bridge's
 `www/core.js` for Cordova's module loader. Edit the shared core or the templates,
 then rebuild; do not edit the generated addon scripts directly.
 
-Addon 1.0.2 explicitly registers `c3runtime/haptics-core.js` with
+Addon 1.0.3 retains the registration introduced in 1.0.2: `c3runtime/haptics-core.js` with
 `AddC3RuntimeScript`, lists it in `addon.json`, and imports it first from
 `main.js`. `SetDOMSideScripts` lists only `domSide.js`; the DOM handler does not
 load the runtime helper path. This follows the official
@@ -58,20 +58,29 @@ passed in a fresh Cordova CLI 13.0.0 / iOS 8.1.1 host without a manual
 and native project inclusion, not Construct's actual export of the declaration,
 Xcode compilation, Build Service pass-through or device execution.
 
+**11 October 2026 follow-up:** fresh ordinary `cordova prepare ios` restored
+the unchanged native URL automatically, without a manual plugin-add command,
+support plugin or project patch. [Current evidence](evidence/ios-auto-prepare-1.0.3.json)
+records that its config came from the shipping declaration in an SDK fixture,
+not an actual Construct export. The selected local route needs no Scirra approval
+or native npm publication; fresh editor export and Xcode/device checks remain
+NOT RUN. The current release passed **181 source + 14 extracted-addon tests**;
+see [TEST-REPORT.md](TEST-REPORT.md).
+
 ## Outputs
 
 | Artifact | Contents |
 | --- | --- |
-| `Supereo_Haptics-1.0.2.c3addon` | ZIP-based SDK v2 package, Construct metadata version `1.0.2.0`, minified JavaScript and editor metadata at archive root. |
+| `Supereo_Haptics-1.0.3.c3addon` | ZIP-based SDK v2 package, Construct metadata version `1.0.3.0`, minified JavaScript and editor metadata at archive root. |
 | `cordova-plugin-supereo-haptics-1.0.0.zip` | Versioned local Cordova bridge directory, including Java/Swift source and schema module. |
 | `cordova-plugin-supereo-haptics-1.0.0.tgz` | npm-format Cordova package; not published to a registry. |
-| `supereo-haptics-source-1.0.2.zip` | Addon, bridge, shared core and source templates, validators, export audit, tests, documentation, demo, examples, schemas and locked build tools. |
+| `supereo-haptics-source-1.0.3.zip` | Addon, bridge, shared core and source templates, validators, export audit, tests, documentation, demo, examples, schemas and locked build tools. |
 | `SHA256SUMS` | SHA-256 of the four distributable archives. |
 
 ```sh
 cd dist
 sha256sum -c SHA256SUMS
-unzip -t Supereo_Haptics-1.0.2.c3addon
+unzip -t Supereo_Haptics-1.0.3.c3addon
 ```
 
 ZIP timestamps are fixed. Identical source and dependency versions produce
@@ -81,8 +90,9 @@ metadata and temporary development signatures; their byte hashes are not
 promised to match another machine's build. The archive itself is not a hardware
 test, and schema validity is not a claim of editor installation.
 
-Addon/source release 1.0.2 uses explicit runtime helper registration, automatic
-native dependency declaration and export-audit support. The native
+Addon/source release 1.0.3 retains explicit runtime helper registration, automatic
+native dependency declaration and export-audit support, and adds bounded startup
+and capability/state recovery. The native
 bridge stays at version 1.0.0, so its archive names and installation identity
 retain that version. An existing native bridge 1.0.0 installation does not need
 to be reinstalled for this addon update.
@@ -114,8 +124,8 @@ Audit both the existing output and the full fresh export after updating the
 folder project at `/Users/ben/Downloads/QuickChess/` through Addon Manager,
 then Project Bar → right-click project → Tools → View used addons → right-click
 the bold bundled Supereo Haptics entry → Update to editor version. Save and
-reload the project. Its bundled archive
-`addons/plugin/Supereo_Haptics.c3addon` must show metadata `1.0.2.0` before the
+close and reopen the project. Its bundled archive
+`addons/plugin/Supereo_Haptics.c3addon` must show metadata `1.0.3.0` before the
 new export. Updating the editor addon does not rewrite a previous export.
 Follow [INSTALLATION.md](INSTALLATION.md) for the full QuickChess source-update,
 export and Cordova preparation sequence.
@@ -125,7 +135,7 @@ device playback or proof that a splash-screen hang has only one cause. At the
 1.0.2 release check, the user's Mac source/export directories were absent and
 the actual export audit had not run.
 
-**Follow-up — 5 October 2026 (UTC):** an uploaded latest Build Service Xcode
+**Historical follow-up — 5 October 2026 (UTC):** an uploaded latest Build Service Xcode
 export has now been inspected. Its 15 Simple-minified JavaScript files parse,
 with zero local static imports and main-thread configuration. Both Supereo
 native bridges were missing; supported Cordova iOS 8.1.1 installation added
@@ -137,10 +147,10 @@ addon and native package versions and code remain unchanged. See
 [TEST-REPORT.md](TEST-REPORT.md) and the
 [sanitized summary](evidence/latest-export-repair-summary.json).
 
-Future standalone Xcode exports can use the separately supplied repair kit;
-follow its artifact README for local postprocessing into a fresh output copy.
-It is handed over separately, since it includes the game's matching analytics
-package. It is not part of this SDK source release or a Build Service approval.
+The copied-export repair kit belongs to that historical handover. The chosen
+current workflow is a fresh **Construct Cordova project export followed by normal
+local Cordova preparation/building**, with no repair kit or per-export plugin-add
+step. See [INSTALLATION.md](INSTALLATION.md).
 
 ## Visual demo check
 
